@@ -58,7 +58,7 @@ void Tardis::do_update()
 {
   unsigned long now = millis();
   // TODO: demo update state.
-  RGB color = interpolate.interpolate(now).toRgb();
+  RGB color = interpolate.interpolate(now % 50001).toRgb();
   for( int i=0; i < DOTSTAR_COUNT; i++) {
       strip.setPixelColor(i, color.r, color.g, color.b);
   }

@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     pix.s = 1.0;
     pix.v = 1.0;
     while(!interrupted) {
-        pix = interp.interpolate((frame++) % 50000);
+        pix = interp.interpolate((frame++) % 50001);
         for (int i=0; i<12; i++) {
             leds[i] = pix.toRgb();
         }
