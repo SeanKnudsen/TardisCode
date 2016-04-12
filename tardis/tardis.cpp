@@ -17,33 +17,33 @@ void Tardis::setup()
 {
   // Initialize inputs
   Serial.begin(115200);
-  
+
   gps.begin(9600);
   //turn on RMC (recommended minimum) and GGA (fix data) including altitude
   gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
   // Request updates on antenna status, comment out to keep quiet
   gps.sendCommand(PGCMD_ANTENNA);
-  Serial1.println(PMTK_Q_RELEASE);  
+  Serial1.println(PMTK_Q_RELEASE);
 
   // Initialize outputs
   strip.begin();
-  
+
   pixel.begin();
-  
+
   display.begin(SSD1306_SWITCHCAPVCC, 0x3D);
   display.clearDisplay();
 
   // clear everything immediately.
   do_output();
-  
+
   motor_shield.begin();
   for (int i=0; i<6; i++) {
     motors[i]->setSpeed(255);
   }
 }
 
-void Tardis::do_input() 
+void Tardis::do_input()
 {
   int val = 0;
   gps.read();
@@ -56,7 +56,6 @@ void Tardis::do_input()
 void Tardis::do_update()
 {
   // TODO: demo update state.
-  
 }
 
 void Tardis::do_output()

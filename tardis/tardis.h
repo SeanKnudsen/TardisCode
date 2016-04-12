@@ -7,7 +7,7 @@
 #include <Adafruit_GPS.h>
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_MS_PWMServoDriver.h"
-/*  
+/*
  *  DotStar LEDs: https://github.com/adafruit/Adafruit_DotStar
  *    Hardware SPI:
  *      DI: Arduino 51
@@ -19,7 +19,7 @@
  *    requred modification to library to include BRAKE case, and special case speed of 255 to 100% PWM otherwise audible tone (1.6kHz?) was heard when solenoid was set to 255.
  *    I2C address: 0x60 (default)
  *  GPS: https://github.com/adafruit/Adafruit_GPS
- *    Serial1    
+ *    Serial1
  *  NeoPixel LEDs: https://github.com/adafruit/Adafruit_NeoPixel
  *    Silly 1-wire interface:
  *      Arduino 40
