@@ -7,6 +7,8 @@
 #include <Adafruit_GPS.h>
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_MS_PWMServoDriver.h"
+
+#include "solenoid.h"
 /*
  *  DotStar LEDs: https://github.com/adafruit/Adafruit_DotStar
  *    Hardware SPI:
@@ -44,7 +46,7 @@ class Tardis {
     Adafruit_SSD1306 display;
     Adafruit_GPS gps;
     Adafruit_MotorShield motor_shield;
-    Adafruit_DCMotor *motors[6];
+    Solenoid *solenoids[6];
 };
 
 #endif

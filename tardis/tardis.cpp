@@ -9,7 +9,7 @@ Tardis::Tardis() :
   motor_shield(Adafruit_MotorShield())
 {
   for (int i=0; i<6; i++) {
-    motors[i] = motor_shield.getMotor(i+1);
+    solenoids[i] = new Solenoid(motor_shield.getMotor(i+1));
   }
 }
 
@@ -39,7 +39,7 @@ void Tardis::setup()
 
   motor_shield.begin();
   for (int i=0; i<6; i++) {
-    motors[i]->setSpeed(255);
+    solenoids[i]->setup();
   }
 }
 
@@ -55,7 +55,19 @@ void Tardis::do_input()
 
 void Tardis::do_update()
 {
+  unsigned long now = millis();
   // TODO: demo update state.
+
+  // Update Solenoids
+  for (int i=0; i < 6; i++) {
+    solenoids[i]->update(now);
+  }
+  if (solenoids[0]->getState() == REST) {
+    solenoids[0]->open();
+  }
+  if (solenoids[2]->getState() == REST) {
+    solenoids[2]->open();
+  }
 }
 
 void Tardis::do_output()
