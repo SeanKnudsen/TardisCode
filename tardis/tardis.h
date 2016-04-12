@@ -9,6 +9,8 @@
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 
 #include "solenoid.h"
+#include "color.h"
+
 /*
  *  DotStar LEDs: https://github.com/adafruit/Adafruit_DotStar
  *    Hardware SPI:
@@ -26,6 +28,8 @@
  *    Silly 1-wire interface:
  *      Arduino 40
  */
+// DotStars
+#define DOTSTAR_COUNT 96
 // NeoPixels
 #define NEOPIXEL_PIN 40
 #define NEOPIXEL_NUM 1
@@ -47,6 +51,8 @@ class Tardis {
     Adafruit_GPS gps;
     Adafruit_MotorShield motor_shield;
     Solenoid *solenoids[6];
+
+    HSVInterpolator interpolate;
 };
 
 #endif
