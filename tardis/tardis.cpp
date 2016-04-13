@@ -48,6 +48,9 @@ void Tardis::do_input()
 {
   int val = 0;
   gps.read();
+  if (gps.newNMEAreceived()) {
+    gps.parse(gps.lastNMEA());
+  }
   // TODO: integrate seans button code
   val = !digitalRead(6);
 
