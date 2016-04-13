@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
         auto t2 = std::chrono::high_resolution_clock::now();
         auto frame = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
         for (int i=0; i<96; i++) {
-            pix = interp.interpolate((frame + ((loop_duration/8)*(i/12))) % (loop_duration + 1));
+            pix = interp.interpolate((frame + ((loop_duration/8)*(i/6))) % (loop_duration + 1));
             leds[i] = pix.toRgb();
         }
         printf("\e[7A");
@@ -90,10 +90,10 @@ int main(int argc, char **argv) {
         output_pane(&leds[84], true);
         printf("\e[7A\e[12C");
         output_pane(&leds[72], false);
-        usleep(14000);
+        usleep(12000);
         auto t3 = std::chrono::high_resolution_clock::now();
 
-        printf("\r%lld %lld\r", frame, std::chrono::duration_cast<std::chrono::milliseconds>(t3-t2).count());
+        printf("\r%lld FPS\r", 1000 / std::chrono::duration_cast<std::chrono::milliseconds>(t3-t2).count());
     }
     (void) tcsetattr(STDIN_FILENO, TCSANOW, &old_tty);
     printf("\n\e[?25h");
