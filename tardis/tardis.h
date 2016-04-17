@@ -8,8 +8,10 @@
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 
+#include "location.h"
 #include "solenoid.h"
 #include "color.h"
+
 
 /*
  *  DotStar LEDs: https://github.com/adafruit/Adafruit_DotStar

@@ -10,3 +10,8 @@ void loop() {
   tardis.do_update();
   tardis.do_output();
 }
+
+// Interrupt called 1/millisecond, looks for GPS data and stores it.
+SIGNAL(TIMER0_COMPA_vect) {
+  tardis.doCollectGPS();
+}

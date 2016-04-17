@@ -8,29 +8,12 @@
 #include <Adafruit_DotStar.h>
 #include <SPI.h>
 #include <Wire.h>
-
-/* #includes for GPS */
 #include <Adafruit_GPS.h>
-#include <SoftwareSerial.h>
 
+#include <SoftwareSerial.h>
+#include "location.h"
 /**************************   Defines   **************************/
 
-/* Defines for GPS */
-// Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
-// Set to 'true' if you want to debug and listen to the raw GPS sentences
-#define GPSECHO  false
-
-#define RADIUS_KM 6371
-#define RADIUS_MI 3959
-#define TO_RAD (3.1415926536 / 180)
-
-#define TARGET_LAT 37.80956388888889
-#define TARGET_LON 122.18388055555556
-#define FOUND_DISTANCE 35 // if you're within 35 feet, you've got it!
-
-/* Example coordinates */
-// Sean's house:         37.80956388888889, 122.18388055555556
-// Jamieson Rach Winery: 38.22041388888889, 122.22920833333333
 
 /* timer #defines */
 #define ONE_HUNDRED_MS 100
@@ -42,6 +25,8 @@
 #define SHORT_PRESS_DURATION 50  //milliseconds
 #define LONG_PRESS_DURATION 550  //milliseconds
 #define MENU_PRESS_DURATION 2000 // milliseconds
+
+Location location = Location();
 
 enum State
 {
@@ -59,12 +44,12 @@ enum State
 Adafruit_SSD1306 display(OLED_RESET);
 
 /* Defines for DotStar */
-#define NUMPIXELS 100 // Number of LEDs in strip
+//#define NUMPIXELS 100 // Number of LEDs in strip
 // Here's how to control the LEDs from any two pins:
 //#define DATAPIN    4
 //#define CLOCKPIN   5
 //Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
-Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DOTSTAR_BRG);
+//Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DOTSTAR_BRG);
 /************************** Select SPI for SSD1306 **************************/
 //Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
@@ -74,9 +59,7 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DOTSTAR_BRG);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
-/* Software Serial for GPS Communication */
-//rx tx
-Adafruit_GPS GPS(&Serial1);
+
 HardwareSerial mySerial = Serial1;
 
 
@@ -104,8 +87,9 @@ State tardis_state = shelf_mode;
 void setup()   
 {          
   display.begin(SSD1306_SWITCHCAPVCC, 0x3D);  // initialize with the I2C addr 0x3D (for the 128x64)      
+  location.setup();
   initOLED();
-  initGPS();
+  //initGPS();
   utcOffset = TIME_OFFSET;
 
   pinMode(6, INPUT);           // set pin to input
@@ -115,9 +99,9 @@ void setup()
   clock_prescale_set(clock_div_1); // Enable 16 MHz on Trinket
   #endif
 
-  strip.begin(); // Initialize pins for output
-  strip.show();  // Turn all LEDs off ASAP
-
+//  strip.begin(); // Initialize pins for output
+  //strip.show();  // Turn all LEDs off ASAP
+  location.setTarget(TARGET_LAT, TARGET_LON);
   Serial.print("TARDIS READY FOR TAKEOFF!");
 }
 
@@ -144,7 +128,7 @@ void loop()
     manageDotStars();
     manageSpeaker();
     manageSolenoids();
-    manageGPS();
+
     manageOLED();
 
     clearButtonPress();
@@ -199,8 +183,8 @@ void manageSolenoids()
 // This loop is entered once every .1 seconds
 void manageGPS()
 {
-
-
+  //location.collectGPS();
+/*
   // lets service this loop 2x per second:
   if(ticks%5 == USE_SLOT_ZERO)
   {
@@ -216,8 +200,7 @@ void manageGPS()
         return;  // we can fail to parse a sentence in which case we should just wait for another
     }
   }
-
-
+*/
 }
 
 uint32_t buttonHoldTime = 0;
@@ -303,7 +286,7 @@ void manageOLED()
         }
         else
         {
-          displayHeading();
+          //displayHeading();
         }
         
         if(MenuPress)
@@ -323,7 +306,7 @@ void manageOLED()
     }
   }  
 }
-
+/*
 void initGPS()
 {
   // connect at 115200 so we can read the GPS fast enough and echo without dropping chars
@@ -357,8 +340,9 @@ void initGPS()
   // Ask for firmware version
   mySerial.println(PMTK_Q_RELEASE);
 }
-
+*/
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
+/*
 SIGNAL(TIMER0_COMPA_vect) {
 
 char c = GPS.read();
@@ -370,9 +354,14 @@ char c = GPS.read();
     // but only one character can be written at a time. 
 #endif
 }
+*/
 
+SIGNAL(TIMER0_COMPA_vect) {
 
+location.collectGPS();
+// if you want to debug, this is a good time to do it!
 
+}
 
 void useInterrupt(boolean v) {
   if (v) {
@@ -407,43 +396,9 @@ void ledHelloWorld()
 }
 
 
-// degree-minute format to decimal-degrees
-double convertDegMinToDecDeg (float degMin) {
-  double min = 0.0;
-  double decDeg = 0.0;
- 
-  //get the minutes, fmod() requires double
-  min = fmod((double)degMin, 100.0);
- 
-  //rebuild coordinates in decimal degrees
-  degMin = (int) ( degMin / 100 );
-  decDeg = degMin + ( min / 60.00 );
- 
-  return decDeg;
-}
-
-int getDegrees(float degMin)
-{
-  return degMin/100;
-}
-
-float getMinutes(float degMin)
-{
-  return (degMin - (getDegrees(degMin) * 100));
-}
 
 
-double dist(double lat1, double lon1, double lat2, double lon2)
-{
-  double dx, dy, dz;
-  lon1 -= lon2;
-  lon1 *= TO_RAD, lat1 *= TO_RAD, lat2 *= TO_RAD;
- 
-  dz = sin(lat1) - sin(lat2);
-  dx = cos(lon1) * cos(lat1) - cos(lat2);
-  dy = sin(lon1) * cos(lat1);
-  return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * RADIUS_MI;
-}
+
 
 
 /**************************   OLED Display Functions   **************************/
@@ -451,11 +406,9 @@ void displayGPS()
 {
   double distanceFromSeans = 0.0;
   
-  float newLat = convertDegMinToDecDeg(GPS.latitude);
-  float newLon = convertDegMinToDecDeg(GPS.longitude);
   int feet = 0;
 
-  if(GPS.fix)
+  if(location.hasFix())
   {
     initLCD(1);
     
@@ -463,10 +416,10 @@ void displayGPS()
     displayLon();  
   
     display.print("Altitude : ");
-    display.print(GPS.altitude);
+    display.print(location.Altitude);
     display.print(" ft\r\n");
 
-    distanceFromSeans = dist(TARGET_LAT, TARGET_LON, newLat, newLon);        
+    distanceFromSeans = location.Distance;    
 
     display.print("Distance : ");
     if(distanceFromSeans >= 1.00)
@@ -487,7 +440,7 @@ void displayGPS()
     display.print("No GPS Fix\r\nTODO: \r\n  <Insert NoGPS Icon Here>");
   }
 }
-
+/*
 void displayHeading()
 {
   initLCD(1);
@@ -511,7 +464,7 @@ void displayHeading()
 
   display.display();
 }
-
+*/
 void displayTime()
 {
   static bool toggleColon = false;
@@ -520,23 +473,23 @@ void displayTime()
   initLCD(2);
 
   display.print(" ");
-  if(GPS.month < 10)
+  if(location.Month < 10)
   {
     display.print("0");
   }
-  display.print(GPS.month); display.print('/'); 
+  display.print(location.Month); display.print('/'); 
 
-  if(GPS.day < 10)
+  if(location.Day < 10)
   {
     display.print("0");
   }
-  display.print(GPS.day); display.print('/');
+  display.print(location.Day); display.print('/');
 
-  display.print(GPS.year);
+  display.print(location.Year);
   display.print("\r\n");
 
   display.print("  ");
-  hour = (24 + GPS.hour + utcOffset)%24;
+  hour = (24 + location.Hour + utcOffset)%24;
   dispHour = hour %12;
   if(dispHour == 0)
   {
@@ -554,11 +507,11 @@ void displayTime()
     display.print(" ");
   }
 
-  if(GPS.minute < 10)
+  if(location.Minute < 10)
   {
     display.print("0");
   }
-  display.print(GPS.minute); 
+  display.print(location.Minute); 
   if(hour < 12)
   {
     display.print("AM");
@@ -599,26 +552,14 @@ void displayCoordinate(int degree, float minute)
 
 void displayLat()
 {
-  int tempDeg;
-  float tempMin;
-  
-  tempDeg = getDegrees(GPS.latitude);
-  tempMin = getMinutes(GPS.latitude);
-  
   display.print("Latitude : ");
-  displayCoordinate(tempDeg, tempMin);
+  displayCoordinate(location.LatDeg, location.LatMin);
 }
 
 void displayLon()
 {
-  int tempDeg;
-  float tempMin;
-  
-  tempDeg = getDegrees(GPS.longitude);
-  tempMin = getMinutes(GPS.longitude);
-  
   display.print("Longitude: ");
-  displayCoordinate(tempDeg, tempMin);
+  displayCoordinate(location.LonDeg, location.LonMin);
 }
 
 
