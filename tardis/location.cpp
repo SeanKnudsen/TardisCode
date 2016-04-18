@@ -71,9 +71,9 @@ void Location::collectGPS()
         LonDeg = getDegrees(gps.longitude);
         LonMin = getMinutes(gps.longitude);
 
-        Serial.print("Lats:");
-        Serial.println(Latitude);
-        Serial.print(LatDeg); Serial.print(" "); Serial.println(LatMin);
+        //Serial.print("Lats:");
+        //Serial.println(Latitude);
+        //Serial.print(LatDeg); Serial.print(" "); Serial.println(LatMin);
         
         Altitude = gps.altitude;
         Distance = dist(Latitude, Longitude);      
