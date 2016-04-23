@@ -6,7 +6,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_GPS.h>
 #include <Adafruit_MotorShield.h>
-#include "utility/Adafruit_MS_PWMServoDriver.h"
+//#include "utility/Adafruit_MS_PWMServoDriver.h"
 
 #include "location.h"
 #include "solenoid.h"
@@ -46,11 +46,13 @@ class Tardis {
     void do_input();
     void do_update();
     void do_output();
+    void doCollectGPS();
   // These should probably be private but whatever.
     Adafruit_DotStar strip;
     Adafruit_NeoPixel pixel;
     Adafruit_SSD1306 display;
-    Adafruit_GPS gps;
+    //Adafruit_GPS gps;
+    Location location;
     Adafruit_MotorShield motor_shield;
     Solenoid *solenoids[6];
 

@@ -1,12 +1,11 @@
 #include "tardis.h"
 
-Location location = Location();
-
 Tardis::Tardis() :
   pixel(Adafruit_NeoPixel(NEOPIXEL_NUM, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800)),
   strip(Adafruit_DotStar(DOTSTAR_COUNT, DOTSTAR_BRG)),
   display(Adafruit_SSD1306(OLED_RESET)),
   //gps(Adafruit_GPS(&Serial1)),
+  location(Location()),
   // Create the motor shield object with the default I2C address
   motor_shield(Adafruit_MotorShield()),
   interpolate(HSVInterpolator(HSV(0.0, 1.0, 1.0), HSV(1.0, 1.0, 1.0), 0, 50000))

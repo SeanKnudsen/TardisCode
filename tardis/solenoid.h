@@ -2,7 +2,7 @@
 #define _SOLENOID_H_
 
 #include <Adafruit_MotorShield.h>
-#include "utility/Adafruit_MS_PWMServoDriver.h"
+//#include "utility/Adafruit_MS_PWMServoDriver.h"
 
 enum Solenoid_State {
   REST,
