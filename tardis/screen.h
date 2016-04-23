@@ -3,8 +3,8 @@
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include "FreeMono9pt7b.h"
-#include "FreeMonoBold9pt7b.h"
+#include <Fonts/FreeMono9pt7b.h>
+#include <Fonts/FreeMonoBold9pt7b.h>
 #include "art.h"
 #define TIME_OFFSET -7
 // Should this be defined here?
