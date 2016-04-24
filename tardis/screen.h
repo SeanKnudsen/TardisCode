@@ -3,6 +3,9 @@
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#ifndef SSD1306_128_64
+#error "go to <Adafruit_SSD1306.h> and make sure SSD1306_128_64 is defined"
+#endif
 #include <Fonts/FreeMono9pt7b.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "art.h"
