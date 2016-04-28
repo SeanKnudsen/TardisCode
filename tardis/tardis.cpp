@@ -15,9 +15,12 @@ Tardis::Tardis() :
   motor_shield(Adafruit_MotorShield()),
   interpolate(HSVInterpolator(HSV(0.0, 1.0, 1.0), HSV(1.0, 1.0, 1.0), 0, 50000))
 {
-  for (int i=0; i<6; i++) {
-    solenoids[i] = new Solenoid(motor_shield.getMotor(i+1));
-  }
+  solenoids[0] = new Solenoid(motor_shield.getMotor(1), INNER);
+  solenoids[1] = new Solenoid(motor_shield.getMotor(1), OUTER);
+  solenoids[2] = new Solenoid(motor_shield.getMotor(2), INNER);
+  solenoids[3] = new Solenoid(motor_shield.getMotor(2), OUTER);
+  solenoids[4] = new Solenoid(motor_shield.getMotor(3), INNER);
+  solenoids[5] = new Solenoid(motor_shield.getMotor(3), OUTER);
 }
 
 void pin_ISR()
@@ -51,10 +54,10 @@ void Tardis::setup()
   // clear everything immediately.
   do_output();
 
-  motor_shield.begin();
-  for (int i=0; i<6; i++) {
-    solenoids[i]->setup();
-  }
+//  motor_shield.begin();
+//  for (int i=0; i<6; i++) {
+//    solenoids[i]->setup();
+//  }
 }
 
 void Tardis:: doCollectGPS()
@@ -125,15 +128,15 @@ void Tardis::do_update()
       pixel.setPixelColor(0, color.r, color.g, color.b);
     
       // Update Solenoids
-      for (int i=0; i < 6; i++) {
-        solenoids[i]->update(now);
-      }
-      if (solenoids[0]->getState() == REST) {
-        solenoids[0]->open();
-      }
-      if (solenoids[2]->getState() == REST) {
-        solenoids[2]->open();
-      }
+//      for (int i=0; i < 6; i++) {
+//        solenoids[i]->update(now);
+//      }
+//      if (solenoids[0]->getState() == REST) {
+//        solenoids[0]->energize();
+//      }
+//      if (solenoids[2]->getState() == REST) {
+//        solenoids[2]->energize();
+//      }
    
       break;
     case shelfMode:

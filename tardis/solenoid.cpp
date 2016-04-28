@@ -1,44 +1,56 @@
 #include "solenoid.h"
 
-Solenoid::Solenoid(Adafruit_DCMotor *m):
-    motor(m),
-    state(REST)
+Solenoid::Solenoid(Adafruit_DCMotor *m, Solenoid_Half h):
+  motor(m),
+  half(h),
+  state(REST),
+  energize_req(false)
 {
 }
 
 void Solenoid::setup() {
-  motor->setSpeed(255);
+  motor->setFullSpeed();
 }
 
-void Solenoid::open() {
-  if (state != REST) {
-    return;
+// energize() just sets a flag, must still call update()
+bool Solenoid::energize() {
+  if (energize_req) {
+    // we're already waiting to energize
+    return false;
+  } else {
+    energize_req = true;
+    return true;
   }
-  start = millis();
-  motor->run(FORWARD);
 }
 
 void Solenoid::update(unsigned long now) {
   // Solenoid always updates by driving:
-  // FORWARD  for 250 ms
-  // BACKWARD for 250 ms
-  // BREAK    for 10000 ms
-  switch(state)
+  // REST      until energize_req
+  // ENERGIZED for ENERGIZE_TIME ms
+  // COOL_DOWN for COOL_DOWN_TIME ms
+  // REST...
+  switch (state)
   {
-    case IN:
-      if ((now - start) > 250) {
-        state = OUT;
-        motor->run(BACKWARD);
+    case REST:
+      if ( energize_req ) {
+        start = millis();
+        state = ENERGIZED;
+        energize_req = false;
+        if ( INNER == half ) {
+          motor->run(BACKWARD);
+        } else if ( OUTER == half ) {
+          motor->run(FORWARD);
+        }
       }
       break;
-    case OUT:
-      if ((now - start) > 500) {
+    case ENERGIZED:
+      if ((now - start) > ENERGIZE_TIME) {
         state = COOL_DOWN;
-        motor->run(BRAKE);
+        motor->run(RELEASE);
       }
       break;
     case COOL_DOWN:
-      if ((now - start) > 15000) {
+      if ((now - start) > (COOL_DOWN_TIME + ENERGIZE_TIME)) {
         state = REST;
       }
       break;
