@@ -6,12 +6,43 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_GPS.h>
 #include <Adafruit_MotorShield.h>
-//#include "utility/Adafruit_MS_PWMServoDriver.h"
 
+#include "button.h"
 #include "location.h"
+#include "screen.h"
 #include "solenoid.h"
 #include "color.h"
 
+
+#define BUTTON_PIN 2
+
+enum useCase {
+  weddingMode,
+  shelfMode,
+  seekMode
+};
+
+enum shelfCase {
+  shelfClock,
+  shelfMenu,
+  shelfMissionReady
+};
+
+/*
+enum weddingState {
+  weddingStart
+};
+
+
+
+enum seekState {
+  seekFar,
+  seekClose,
+  seekFound
+}; 
+*/
+
+//shelfState 
 
 /*
  *  DotStar LEDs: https://github.com/adafruit/Adafruit_DotStar
@@ -28,16 +59,14 @@
  *    Serial1
  *  NeoPixel LEDs: https://github.com/adafruit/Adafruit_NeoPixel
  *    Silly 1-wire interface:
- *      Arduino 40
+ *      Arduino 42
  */
 // DotStars
 #define DOTSTAR_COUNT 96
 // NeoPixels
-#define NEOPIXEL_PIN 40
+#define NEOPIXEL_PIN 42
 #define NEOPIXEL_NUM 1
 
-// SSD1306
-#define OLED_RESET 30
 
 class Tardis {
   public:
@@ -48,11 +77,11 @@ class Tardis {
     void do_output();
     void doCollectGPS();
   // These should probably be private but whatever.
+
     Adafruit_DotStar strip;
     Adafruit_NeoPixel pixel;
     Adafruit_SSD1306 display;
     //Adafruit_GPS gps;
-    Location location;
     Adafruit_MotorShield motor_shield;
     Solenoid *solenoids[6];
 

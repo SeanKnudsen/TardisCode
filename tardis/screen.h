@@ -7,11 +7,10 @@
 #error "go to <Adafruit_SSD1306.h> and make sure SSD1306_128_64 is defined"
 #endif
 #include <Fonts/FreeMono9pt7b.h>
-#include <Fonts/FreeMonoBold9pt7b.h>
 #include "art.h"
 #define TIME_OFFSET -7
 // Should this be defined here?
-#define OLED_RESET 7
+#define OLED_RESET 41
 
 
 class Screen {

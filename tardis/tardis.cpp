@@ -1,11 +1,16 @@
 #include "tardis.h"
 
+Location location = Location();
+Screen screen = Screen();
+Button button = Button();
+useCase uberState;
+shelfCase shelfState;
+
 Tardis::Tardis() :
   pixel(Adafruit_NeoPixel(NEOPIXEL_NUM, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800)),
   strip(Adafruit_DotStar(DOTSTAR_COUNT, DOTSTAR_BRG)),
   display(Adafruit_SSD1306(OLED_RESET)),
   //gps(Adafruit_GPS(&Serial1)),
-  location(Location()),
   // Create the motor shield object with the default I2C address
   motor_shield(Adafruit_MotorShield()),
   interpolate(HSVInterpolator(HSV(0.0, 1.0, 1.0), HSV(1.0, 1.0, 1.0), 0, 50000))
@@ -15,27 +20,33 @@ Tardis::Tardis() :
   }
 }
 
+void pin_ISR()
+{
+  button.pinISR();
+}
+
 void Tardis::setup()
 {
+  //initialize state machine when we first boot up
+  uberState = shelfMode;
+  shelfState = shelfClock;
+  
   // Initialize inputs
   Serial.begin(115200);
   location.setup();
   location.setTarget(TARGET_LAT, TARGET_LON);
-  //gps.begin(9600);
-  //turn on RMC (recommended minimum) and GGA (fix data) including altitude
-  //gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-  //gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
-  // Request updates on antenna status, comment out to keep quiet
-  //gps.sendCommand(PGCMD_ANTENNA);
-  //Serial1.println(PMTK_Q_RELEASE);
+
+  // Setup Button as interrupt
+  pinMode(BUTTON_PIN, INPUT_PULLUP);           
+  attachInterrupt(0, pin_ISR, CHANGE);
+  button.setup();
 
   // Initialize outputs
   strip.begin();
 
   pixel.begin();
 
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3D);
-  display.clearDisplay();
+  screen.setup();
 
   // clear everything immediately.
   do_output();
@@ -53,14 +64,46 @@ void Tardis:: doCollectGPS()
 
 void Tardis::do_input()
 {
-  int val = 0;
-  //gps.read();
-  //if (gps.newNMEAreceived()) {
-  //  gps.parse(gps.lastNMEA());
-  //}
-  // TODO: integrate seans button code
+  // I think we can read GPS no matter what?
   location.collectGPS();
-  val = !digitalRead(6);
+
+  switch(uberState)
+  {
+    case weddingMode:
+    
+      break;
+    case shelfMode:
+
+      switch(shelfState)
+      {
+        case shelfClock:
+          if(button.MenuPress)
+          {
+            shelfState = shelfMenu;
+            
+          }
+
+          // TODO: add check to see if we're close enough to switch to mission ready
+          break;
+
+        case shelfMenu:
+
+
+        
+            // TODO: implement timeout to go back to shelfClockMode
+          break;
+        case shelfMissionReady:
+
+          break;
+      }
+
+      button.clearButtonPress();
+
+      break;
+    case seekMode:
+
+      break;
+  }
 
   // TODO: serial read?
 }
@@ -68,24 +111,48 @@ void Tardis::do_input()
 void Tardis::do_update()
 {
   unsigned long now = millis();
-  // TODO: demo update state.
-  RGB color = interpolate.interpolate(now % 50001).toRgb();
-  for( int i=0; i < DOTSTAR_COUNT; i++) {
-      strip.setPixelColor(i, color.r, color.g, color.b);
-  }
-  pixel.setPixelColor(0, color.r, color.g, color.b);
+  RGB color;
 
-  // Update Solenoids
-  for (int i=0; i < 6; i++) {
-    solenoids[i]->update(now);
+  switch(uberState)
+  {
+    case weddingMode:
+    
+      // TODO: demo update state.
+      color = interpolate.interpolate(now % 50001).toRgb();
+      for( int i=0; i < DOTSTAR_COUNT; i++) {
+          strip.setPixelColor(i, color.r, color.g, color.b);
+      }
+      pixel.setPixelColor(0, color.r, color.g, color.b);
+    
+      // Update Solenoids
+      for (int i=0; i < 6; i++) {
+        solenoids[i]->update(now);
+      }
+      if (solenoids[0]->getState() == REST) {
+        solenoids[0]->open();
+      }
+      if (solenoids[2]->getState() == REST) {
+        solenoids[2]->open();
+      }
+   
+      break;
+    case shelfMode:
+      //nest switch statement here:
+
+      break;
+    case seekMode:
+
+      break;
   }
-  if (solenoids[0]->getState() == REST) {
-    solenoids[0]->open();
-  }
-  if (solenoids[2]->getState() == REST) {
-    solenoids[2]->open();
-  }
+
+
+
+
+  
+
 }
+
+
 
 void Tardis::do_output()
 {
