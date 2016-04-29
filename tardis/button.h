@@ -21,9 +21,9 @@ class Button {
     Button();
     void setup();
     void clearButtonPress();
-    void pinISR();
+    void pinPoll();
 
-    const int buttonPin = 2;
+    const int buttonPin = 47;
 
     
 

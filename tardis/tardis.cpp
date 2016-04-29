@@ -22,12 +22,12 @@ Tardis::Tardis() :
   solenoids[4] = new Solenoid(motor_shield.getMotor(3), INNER);
   solenoids[5] = new Solenoid(motor_shield.getMotor(3), OUTER);
 }
-
+/*
 void pin_ISR()
 {
   button.pinISR();
 }
-
+*/
 void Tardis::setup()
 {
   //initialize state machine when we first boot up
@@ -40,8 +40,8 @@ void Tardis::setup()
   location.setTarget(TARGET_LAT, TARGET_LON);
 
   // Setup Button as interrupt
-  pinMode(BUTTON_PIN, INPUT_PULLUP);           
-  attachInterrupt(0, pin_ISR, CHANGE);
+  // pinMode(BUTTON_PIN, INPUT_PULLUP);           
+  // attachInterrupt(0, pin_ISR, CHANGE);
   button.setup();
 
   // Initialize outputs
@@ -70,6 +70,22 @@ void Tardis::do_input()
   // I think we can read GPS no matter what?
   location.collectGPS();
 
+    // TODO: serial read?
+}
+
+void Tardis::do_update()
+{
+  static unsigned long lastShowTime = 0;
+  unsigned long now = millis();
+  static bool timeInitialized = false;
+  RGB color;
+  
+  button.pinPoll();
+  if(!timeInitialized)
+  {
+    lastShowTime = now;
+    timeInitialized = true;
+  }
   switch(uberState)
   {
     case weddingMode:
@@ -80,6 +96,33 @@ void Tardis::do_input()
       switch(shelfState)
       {
         case shelfClock:
+          if((now - lastShowTime) >=1000)
+          {
+            screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
+            lastShowTime = now;
+          }
+
+
+         // TODO: demo update state.
+              color = interpolate.interpolate(now % 50001).toRgb();
+              for( int i=0; i < DOTSTAR_COUNT; i++) {
+                  strip.setPixelColor(i, color.r, color.g, color.b);
+              }
+              pixel.setPixelColor(0, color.r, color.g, color.b);
+            
+              // Update Solenoids
+        //      for (int i=0; i < 6; i++) {
+        //        solenoids[i]->update(now);
+        //      }
+        //      if (solenoids[0]->getState() == REST) {
+        //        solenoids[0]->energize();
+        //      }
+        //      if (solenoids[2]->getState() == REST) {
+        //        solenoids[2]->energize();
+        //      }
+
+
+        
           if(button.MenuPress)
           {
             shelfState = shelfMenu;
@@ -90,7 +133,7 @@ void Tardis::do_input()
           break;
 
         case shelfMenu:
-
+          screen.showMainMenu(1);
 
         
             // TODO: implement timeout to go back to shelfClockMode
@@ -108,45 +151,6 @@ void Tardis::do_input()
       break;
   }
 
-  // TODO: serial read?
-}
-
-void Tardis::do_update()
-{
-  unsigned long now = millis();
-  RGB color;
-
-  switch(uberState)
-  {
-    case weddingMode:
-    
-      // TODO: demo update state.
-      color = interpolate.interpolate(now % 50001).toRgb();
-      for( int i=0; i < DOTSTAR_COUNT; i++) {
-          strip.setPixelColor(i, color.r, color.g, color.b);
-      }
-      pixel.setPixelColor(0, color.r, color.g, color.b);
-    
-      // Update Solenoids
-//      for (int i=0; i < 6; i++) {
-//        solenoids[i]->update(now);
-//      }
-//      if (solenoids[0]->getState() == REST) {
-//        solenoids[0]->energize();
-//      }
-//      if (solenoids[2]->getState() == REST) {
-//        solenoids[2]->energize();
-//      }
-   
-      break;
-    case shelfMode:
-      //nest switch statement here:
-
-      break;
-    case seekMode:
-
-      break;
-  }
 
 
 

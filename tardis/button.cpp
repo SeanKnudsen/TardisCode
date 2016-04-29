@@ -7,16 +7,18 @@
 //  Constructor
   Button::Button(){}
 
-
+//46, 47
 
 // Call this from setup()
 void Button::setup()
 {
-  Serial.print("in button setup!!!\n");
+  Serial.print("in button setup\n");
   buttonState = false;
   buttonHeld = false;
   buttonHoldTime = 0;
   clearButtonPress();
+  pinMode(46, OUTPUT);
+  digitalWrite(46, LOW);
   pinMode(buttonPin, INPUT);
   digitalWrite(buttonPin, HIGH);       // turn on pullup resistors
 // this must appear outside this function:
@@ -24,7 +26,7 @@ void Button::setup()
 }
 
 
-void Button::pinISR() {
+void Button::pinPoll() {
   buttonState = !digitalRead(buttonPin);
 
   if(buttonState) {

@@ -14,8 +14,6 @@
 #include "color.h"
 
 
-#define BUTTON_PIN 2
-
 enum useCase {
   weddingMode,
   shelfMode,
