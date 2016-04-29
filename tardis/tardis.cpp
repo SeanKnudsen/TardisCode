@@ -15,12 +15,12 @@ Tardis::Tardis() :
   motor_shield(Adafruit_MotorShield()),
   interpolate(HSVInterpolator(HSV(0.0, 1.0, 1.0), HSV(1.0, 1.0, 1.0), 0, 50000))
 {
-  solenoids[0] = new Solenoid(motor_shield.getMotor(1), INNER);
-  solenoids[1] = new Solenoid(motor_shield.getMotor(1), OUTER);
+  solenoids[0] = new Solenoid(motor_shield.getMotor(1), OUTER);
+  solenoids[1] = new Solenoid(motor_shield.getMotor(1), INNER);
   solenoids[2] = new Solenoid(motor_shield.getMotor(2), INNER);
   solenoids[3] = new Solenoid(motor_shield.getMotor(2), OUTER);
-  solenoids[4] = new Solenoid(motor_shield.getMotor(3), INNER);
-  solenoids[5] = new Solenoid(motor_shield.getMotor(3), OUTER);
+  solenoids[4] = new Solenoid(motor_shield.getMotor(3), OUTER);
+  solenoids[5] = new Solenoid(motor_shield.getMotor(3), INNER);
 }
 /*
 void pin_ISR()
@@ -28,6 +28,15 @@ void pin_ISR()
   button.pinISR();
 }
 */
+
+void Tardis::updateSolenoids()
+{
+  unsigned long now = millis();
+  for (int i=0; i < SOLENOIDS_NUM; i++) {
+    solenoids[i]->update(now);
+  }
+}
+
 void Tardis::setup()
 {
   //initialize state machine when we first boot up
@@ -54,10 +63,10 @@ void Tardis::setup()
   // clear everything immediately.
   do_output();
 
-//  motor_shield.begin();
-//  for (int i=0; i<6; i++) {
-//    solenoids[i]->setup();
-//  }
+  motor_shield.begin();
+  for (int i=0; i<SOLENOIDS_NUM; i++) {
+    solenoids[i]->setup();
+  }
 }
 
 void Tardis:: doCollectGPS()
@@ -65,10 +74,22 @@ void Tardis:: doCollectGPS()
   location.collectGPS();
 }
 
+void Tardis::solenoidTest()
+{
+  static int activeSolenoid = SOLENOIDS_NUM-1;
+  
+  if ( solenoids[activeSolenoid]->getState() == REST && solenoids[(activeSolenoid+1)%SOLENOIDS_NUM]->getState() == REST ) {
+    activeSolenoid = (activeSolenoid+1) % SOLENOIDS_NUM;
+    solenoids[activeSolenoid]->energize();
+  }
+}
+
 void Tardis::do_input()
 {
   // I think we can read GPS no matter what?
   location.collectGPS();
+  
+  solenoidTest();
 
     // TODO: serial read?
 }
@@ -112,16 +133,7 @@ void Tardis::do_update()
               }
               pixel.setPixelColor(0, color.r, color.g, color.b);
             
-              // Update Solenoids
-        //      for (int i=0; i < 6; i++) {
-        //        solenoids[i]->update(now);
-        //      }
-        //      if (solenoids[0]->getState() == REST) {
-        //        solenoids[0]->energize();
-        //      }
-        //      if (solenoids[2]->getState() == REST) {
-        //        solenoids[2]->energize();
-        //      }
+              updateSolenoids();
 
 
         
