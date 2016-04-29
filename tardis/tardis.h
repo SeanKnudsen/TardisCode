@@ -65,6 +65,7 @@ enum seekState {
 #define NEOPIXEL_PIN 42
 #define NEOPIXEL_NUM 1
 
+#define SOLENOIDS_NUM 6
 
 class Tardis {
   public:
@@ -74,6 +75,8 @@ class Tardis {
     void do_update();
     void do_output();
     void doCollectGPS();
+    void solenoidTest();
+    void updateSolenoids();
   // These should probably be private but whatever.
 
     Adafruit_DotStar strip;
@@ -81,7 +84,7 @@ class Tardis {
     Adafruit_SSD1306 display;
     //Adafruit_GPS gps;
     Adafruit_MotorShield motor_shield;
-    Solenoid *solenoids[6];
+    Solenoid *solenoids[SOLENOIDS_NUM];
 
     HSVInterpolator interpolate;
 };
