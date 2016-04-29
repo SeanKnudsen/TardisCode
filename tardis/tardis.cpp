@@ -76,6 +76,8 @@ void Tardis::do_input()
 void Tardis::do_update()
 {
   static unsigned long lastShowTime = 0;
+  static int menuState = 1;
+  
   unsigned long now = millis();
   static bool timeInitialized = false;
   RGB color;
@@ -133,7 +135,16 @@ void Tardis::do_update()
           break;
 
         case shelfMenu:
-          screen.showMainMenu(1);
+          screen.showMainMenu(menuState);
+          if(button.ShortPress)
+          {
+            menuState = (menuState + 1);
+            menuState = (menuState >= 4 )? 1 : menuState;
+          }
+          else if (button.LongPress)
+          {
+            
+          }
 
         
             // TODO: implement timeout to go back to shelfClockMode
