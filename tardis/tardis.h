@@ -26,6 +26,12 @@ enum shelfCase {
   shelfMissionReady
 };
 
+enum subMenuCase {
+  subMenu,
+  subLED,
+  subClk,
+  subDoors
+};
 /*
 enum weddingState {
   weddingStart

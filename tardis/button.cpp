@@ -21,6 +21,9 @@ void Button::setup()
   digitalWrite(46, LOW);
   pinMode(buttonPin, INPUT);
   digitalWrite(buttonPin, HIGH);       // turn on pullup resistors
+
+
+  
 // this must appear outside this function:
 //   attachInterrupt(digitalPinToInterrupt(buttonPin), pin_ISR, CHANGE);
 }

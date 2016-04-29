@@ -6,10 +6,14 @@ Button button = Button();
 useCase uberState;
 shelfCase shelfState;
 
+bool batteryPower = false;
+
+
+
 Tardis::Tardis() :
   pixel(Adafruit_NeoPixel(NEOPIXEL_NUM, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800)),
   strip(Adafruit_DotStar(DOTSTAR_COUNT, DOTSTAR_BRG)),
-  display(Adafruit_SSD1306(OLED_RESET)),
+  //display(Adafruit_SSD1306(OLED_RESET)),
   //gps(Adafruit_GPS(&Serial1)),
   // Create the motor shield object with the default I2C address
   motor_shield(Adafruit_MotorShield()),
@@ -21,6 +25,23 @@ Tardis::Tardis() :
   solenoids[3] = new Solenoid(motor_shield.getMotor(2), OUTER);
   solenoids[4] = new Solenoid(motor_shield.getMotor(3), OUTER);
   solenoids[5] = new Solenoid(motor_shield.getMotor(3), INNER);
+
+// Power switch 32, 33; Switch closed when on wall power (we think!)
+  pinMode(32, OUTPUT);
+  digitalWrite(32, LOW);
+  pinMode(33, INPUT);
+  digitalWrite(33, HIGH);       // turn on p
+
+  batteryPower = !digitalRead(33);
+  if(batteryPower)
+  {
+      Serial.println("I am on battery power");
+  }
+  else
+  {
+      Serial.println("I am on wall power");
+  }
+  
 }
 /*
 void pin_ISR()
@@ -98,7 +119,8 @@ void Tardis::do_update()
 {
   static unsigned long lastShowTime = 0;
   static int menuState = 1;
-  
+  static int ledState = 0;
+  static int subMenuState = 0;
   unsigned long now = millis();
   static bool timeInitialized = false;
   RGB color;
@@ -123,17 +145,17 @@ void Tardis::do_update()
           {
             screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
             lastShowTime = now;
-          }
 
+           }
 
          // TODO: demo update state.
-              color = interpolate.interpolate(now % 50001).toRgb();
-              for( int i=0; i < DOTSTAR_COUNT; i++) {
-                  strip.setPixelColor(i, color.r, color.g, color.b);
-              }
-              pixel.setPixelColor(0, color.r, color.g, color.b);
-            
-              updateSolenoids();
+          color = interpolate.interpolate(now % 50001).toRgb();
+          for( int i=0; i < DOTSTAR_COUNT; i++) {
+              strip.setPixelColor(i, color.r, color.g, color.b);
+          }
+          pixel.setPixelColor(0, color.r, color.g, color.b);
+       
+          updateSolenoids();
 
 
         
@@ -147,15 +169,38 @@ void Tardis::do_update()
           break;
 
         case shelfMenu:
-          screen.showMainMenu(menuState);
-          if(button.ShortPress)
+        
+          switch (subMenuState)
           {
-            menuState = (menuState + 1);
-            menuState = (menuState >= 4 )? 1 : menuState;
-          }
-          else if (button.LongPress)
-          {
+            case subMenu:
+              screen.showMainMenu(menuState);
+              if(button.ShortPress)
+              {
+                menuState = (menuState + 1);
+                menuState = (menuState >= 4 )? 1 : menuState;
+              }
+              else if (button.LongPress)
+              {
+                subMenuState = menuState;
+              }
+            break;
+            case subLED:
+              // LEDS!
+              screen.showLEDMenu(ledState);
+              if(button.ShortPress)
+              {
+                ledState = (ledState + 1);
+                ledState = (ledState >= 7 )? 1 : ledState;
+              }
+            break;
             
+            case subClk:
+
+            break;
+
+            case subDoors:
+
+            break;
           }
 
         
@@ -188,5 +233,5 @@ void Tardis::do_output()
 {
   strip.show();
   pixel.show();  // clear immediately.
-  display.display();
+  //display.display();
 }
