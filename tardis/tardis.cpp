@@ -5,6 +5,7 @@ Screen screen = Screen();
 Button button = Button();
 useCase uberState;
 shelfCase shelfState;
+SerialCom serialcom = SerialCom();
 
 bool batteryPower = false;
 
@@ -30,10 +31,10 @@ Tardis::Tardis() :
   interpolate(HSVInterpolator(HSV(0.0, 1.0, 1.0), HSV(1.0, 1.0, 1.0), 0, 50000))
 {
   solenoids[0] = new Solenoid(motor_shield.getMotor(1), OUTER);
-  solenoids[1] = new Solenoid(motor_shield.getMotor(1), INNER);
-  solenoids[2] = new Solenoid(motor_shield.getMotor(2), INNER);
-  solenoids[3] = new Solenoid(motor_shield.getMotor(2), OUTER);
-  solenoids[4] = new Solenoid(motor_shield.getMotor(3), OUTER);
+  solenoids[1] = new Solenoid(motor_shield.getMotor(2), INNER);
+  solenoids[2] = new Solenoid(motor_shield.getMotor(3), OUTER);
+  solenoids[3] = new Solenoid(motor_shield.getMotor(1), INNER);
+  solenoids[4] = new Solenoid(motor_shield.getMotor(2), OUTER);
   solenoids[5] = new Solenoid(motor_shield.getMotor(3), INNER);
 
 // Power switch 32, 33; Switch closed when on wall power (we think!)
@@ -45,11 +46,11 @@ Tardis::Tardis() :
   batteryPower = !digitalRead(33);
   if(batteryPower)
   {
-      Serial.println("I am on battery power");
+      //Serial.println("I am on battery power");
   }
   else
   {
-      Serial.println("I am on wall power");
+      //Serial.println("I am on wall power");
   }
   
 }
@@ -76,7 +77,9 @@ void Tardis::setup()
   
   // Initialize inputs
   Serial.begin(115200);
+  serialcom.setup();
   location.setup();
+
   location.setTarget(TARGET_LAT, TARGET_LON);
 
   // Setup Button as interrupt
@@ -115,16 +118,45 @@ void Tardis::solenoidTest()
   }
 }
 
+// Andrews Doors
+//  ------
+// | 1 4 |
+// | 2 5 |
+// | 3 6 |
+
+
+
 void Tardis::do_input()
 {
   // I think we can read GPS no matter what?
   location.collectGPS();
-  
-  solenoidTest();
+  serialcom.checkForCommand();
+
+  if(serialcom.gotCommand)
+  {
+    serialcom.writeStr(serialcom.cmdCommand);
+    serialcom.writeStr(serialcom.cmdParam);
+    switch(serialcom.cmdCommand)
+    {
+      case 1:
+        if(serialcom.cmdParam >= 0 && serialcom.cmdParam <=5)
+        {
+          solenoids[serialcom.cmdParam]->energize();
+        }
+        break;
+
+      case 2:
+ 
+        break;
+    }
+
+    serialcom.gotCommand = false;
+  }
+  //solenoidTest();
 
     // TODO: serial read?
 }
-
+/*
 void Tardis::do_update()
 {
   static unsigned long lastShowTime = 0;
@@ -193,8 +225,9 @@ void Tardis::do_update()
               else if (button.LongPress)
               {
                 subMenuState = menuState;
+                ledState = 0;
               }
-            break;
+              break;
             case subLED:
               // LEDS!
               screen.showLEDMenu(ledState);
@@ -206,7 +239,7 @@ void Tardis::do_update()
             break;
             
             case subClk:
-
+              //screen.showUTCOffset(
             break;
 
             case subDoors:
@@ -229,10 +262,18 @@ void Tardis::do_update()
   }
 
 }
+*/
+
+void Tardis::do_update()
+{
+  
+}
 
 void Tardis::do_output()
 {
+  updateSolenoids();
   strip.show();
   pixel.show();  // clear immediately.
+  screen.updateScreen();
   //display.display();
 }

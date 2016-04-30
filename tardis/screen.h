@@ -28,6 +28,7 @@ class Screen {
     void showConnieLovesErik();
     void showNoGPS();
     void showUTCOffset(uint8_t selection);
+    void updateScreen();
     Adafruit_SSD1306 display;
 
     int utcOffset;

@@ -6,11 +6,13 @@ Screen::Screen() :
   {
   }
 
+bool updateNeeded = false;
+
 void Screen::setup()
 {
    display.begin(SSD1306_SWITCHCAPVCC, 0x3D);  // initialize with the I2C addr 0x3D (for the 128x64)  
    utcOffset = TIME_OFFSET; 
-   //display.begin(SSD1306_SWITCHCAPVCC);    
+   updateNeeded = false;
 }
 
 
@@ -51,7 +53,8 @@ void Screen::showMainMenu(uint8_t selection)
         display.println("  - DOORS - ");
         break;
     }
-    display.display();
+    //display.display();
+    updateNeeded = true;
       display.setFont();
   }
 }
@@ -77,47 +80,48 @@ void Screen::showLEDMenu(uint8_t selection)
       display.setCursor(0,24);
     switch(selection)
     {
-      // Case 1 - 3 are screen one
-      case 1:
+      // Case 0 - 2 are screen one
+      case 0:
         display.println("  - OFF -");
         display.println("   LED 1");
         display.println("   LED 2");
         break;
-      case 2:
+      case 1:
         display.println("   OFF");
         display.println("  - LED 1 -");
         display.println("   LED 2");
         break;
-      case 3:
+      case 2:
         display.println("   OFF");
         display.println("   LED 1");
         display.println("  - LED 2 -");
         break;
         
-      // Case 4 - 6 are screen two
-      case 4:
+      // Case 3 - 5 are screen two
+      case 3:
         display.println("  - LED 3 -");
         display.println("   LED 4");
         display.println("   LED 5");
         break;
-      case 5:
+      case 4:
         display.println("   LED 3");
         display.println("  - LED 4 -");
         display.println("   LED 5");
         break;
-      case 6:
+      case 5:
         display.println("   LED 3");
         display.println("   LED 4");
         display.println("  - LED 5 -");
         break;
   
-      // Case 7 is screen three
-      case 7:
+      // Case 6 is screen three
+      case 6:
         display.println("  - LED 6 -");
         break;
     }
     
-    display.display();
+    // display.display();
+    updateNeeded = true;
     display.setFont();
   }
 }
@@ -158,7 +162,8 @@ void Screen::showUTCOffset(uint8_t selection)
         break;
     }
     
-    display.display();
+    //display.display();
+    updateNeeded = true;
     Serial.print("end of func!");
   }
 }
@@ -170,7 +175,8 @@ void Screen::showConnieLovesErik()
 
   // miniature bitmap display
   display.drawBitmap(0, 0,  connieLovesErik, 128, 64, 1);
-  display.display();
+  //display.display();
+  updateNeeded = true;
 }
 
 void Screen::showNoGPS()
@@ -216,7 +222,8 @@ void Screen::showStdLatLon(double latdeg, double latmin, double londeg, double l
     display.print(feet); display.print(" ft\r\n");
   }
   
-  display.display();
+  //display.display();
+  updateNeeded = true;
 }
 
 
@@ -277,7 +284,8 @@ void Screen::showTime(uint8_t minute, uint8_t hour, uint8_t day, uint8_t month, 
   {
     display.print("PM");
   }
-  display.display();
+  // display.display();
+  updateNeeded = true;
 
   toggleColon = !toggleColon;
 }
@@ -290,7 +298,15 @@ void Screen::noGPSFix()
    //showNoGPS();
 }
 
-
+void Screen::updateScreen()
+{
+  if(updateNeeded)
+  {
+    // display.display();
+    updateNeeded = true;
+  }
+  updateNeeded = false;
+}
 
 
 

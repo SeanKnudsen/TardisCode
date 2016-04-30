@@ -12,7 +12,7 @@
 // Call this from setup()
 void Button::setup()
 {
-  Serial.print("in button setup\n");
+  //Serial.print("in button setup\n");
   buttonState = false;
   buttonHeld = false;
   buttonHoldTime = 0;
@@ -33,7 +33,7 @@ void Button::pinPoll() {
   buttonState = !digitalRead(buttonPin);
 
   if(buttonState) {
-    Serial.print("Push!");
+    //Serial.print("Push!");
     if(!buttonHeld)
     {
       // If button pressed for the first time, record time
@@ -45,7 +45,7 @@ void Button::pinPoll() {
   {
     if(buttonHeld) {
       buttonHoldTime = millis() - buttonHoldTime;
-      Serial.print("Button Press: "); Serial.print(buttonHoldTime); Serial.print("\n");
+      //Serial.print("Button Press: "); Serial.print(buttonHoldTime); Serial.print("\n");
       //Serial.println("--------------------------");
 
       if(buttonHoldTime > MENU_PRESS_DURATION)

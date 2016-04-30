@@ -12,6 +12,7 @@
 #include "screen.h"
 #include "solenoid.h"
 #include "color.h"
+#include "serialCom.h"
 
 
 enum useCase {
