@@ -9,17 +9,6 @@ SerialCom serialcom = SerialCom();
 
 bool batteryPower = false;
 
-int lut[] = {
-    74, 75, 80, 81, 73, 76, 79, 82, 72, 77, 78, 83,
-    60, 65, 66, 71, 61, 64, 67, 70, 62, 63, 68, 69,
-    50, 51, 56, 57, 49, 52, 55, 58, 48, 53, 54, 59,
-    38, 39, 44, 45, 37, 40, 43, 46, 36, 41, 42, 47,
-    26, 27, 32, 33, 25, 28, 31, 34, 24, 29, 30, 35,
-    12, 17, 18, 23, 13, 16, 19, 22, 14, 15, 20, 21,
-     0,  5,  6, 11,  1,  4,  7, 10,  2,  3,  8,  9,
-    84, 89, 90, 95, 85, 88, 91, 94, 86, 87, 92, 93,
-};
-
 
 Tardis::Tardis() :
   pixel(Adafruit_NeoPixel(NEOPIXEL_NUM, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800)),
@@ -187,12 +176,19 @@ void Tardis::do_update()
 
            }
 
-         // TODO: demo update state.
-          color = interpolate.interpolate(now % 50001).toRgb();
-          for( int i=0; i < DOTSTAR_COUNT; i++) {
-              // strip pixels are GRB??
-              strip.setPixelColor(lut[i], color.g, color.r, color.b);
+          // TODO: demo update state.
+          switch ((now / 30000) % 3) {
+              case 0:
+                  pulse_update(strip, now);
+                  break;
+              case 1:
+                  solid_fader_update(strip, now);
+                  break;
+              case 2:
+                  chaser_update(strip, now);
+                  break;
           }
+          color.r = 255;
           pixel.setPixelColor(0, color.r, color.g, color.b);
        
           updateSolenoids();

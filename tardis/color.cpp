@@ -60,3 +60,17 @@ HSV HSVInterpolator::interpolate(unsigned long value)
                a.s + b.s * t,
                a.v + b.v * t);
 }
+
+Interpolator::Interpolator(float a, float b, float start, float end) :
+    a(a),
+    b(b-a),
+    start(start),
+    end(end)
+{
+}
+
+float Interpolator::interpolate(float value)
+{
+    float t = (value) / (end - start);
+    return a + b * t;
+}

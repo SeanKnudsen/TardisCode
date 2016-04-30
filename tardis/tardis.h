@@ -13,6 +13,7 @@
 #include "solenoid.h"
 #include "color.h"
 #include "serialCom.h"
+#include "led_updater.h"
 
 
 enum useCase {

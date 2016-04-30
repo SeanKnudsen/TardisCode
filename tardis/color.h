@@ -19,6 +19,17 @@ struct HSV {
     double v;
 };
 
+class Interpolator {
+    public:
+    Interpolator(float a, float b, float start, float end);
+    float interpolate(float value);
+    private:
+      float a;
+      float b;
+      float start;
+      float end;
+};
+
 class HSVInterpolator {
     public:
     HSVInterpolator(HSV a, HSV b, unsigned long start, unsigned long end);
