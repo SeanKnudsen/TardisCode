@@ -152,11 +152,8 @@ void Tardis::do_input()
 
     serialcom.gotCommand = false;
   }
-  //solenoidTest();
-
-    // TODO: serial read?
 }
-/*
+
 void Tardis::do_update()
 {
   static unsigned long lastShowTime = 0;
@@ -261,12 +258,6 @@ void Tardis::do_update()
       break;
   }
 
-}
-*/
-
-void Tardis::do_update()
-{
-  
 }
 
 void Tardis::do_output()
