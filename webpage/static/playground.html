@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>	
+
+	</head>
+	<body>
+		<center>Click on below table cell to find its value.
+		    <br />
+		    <br />
+		</center>
+		<table align="center" id="tblMain" border="1" style="cursor: pointer;">
+		    <tr>
+		        <td>R1C1</td>
+		        <td>R1C2</td>
+		        <td>R1C3</td>
+		        <td>R1C4</td>
+		    </tr>
+		    <tr>
+		        <td>R2C1</td>
+		        <td>R2C2</td>
+		        <td>R2C3</td>
+		        <td>R2C4</td>
+		    </tr>
+		    <tr>
+		        <td>R3C1</td>
+		        <td>R3C2</td>
+		        <td>R3C3</td>
+		        <td>R3C4</td>
+		    </tr>
+		    <tr>
+		        <td>R4C1</td>
+		        <td>R4C2</td>
+		        <td>R4C3</td>
+		        <td>R4C4</td>
+		    </tr>
+		</table>
+		<br />
+		<script type="text/javascript">
+		var tbl = document.getElementById("tblMain");
+		if (tbl != null) {
+		    for (var i = 0; i < tbl.rows.length; i++) {
+		        for (var j = 0; j < tbl.rows[i].cells.length; j++) {
+		            tbl.rows[i].cells[j].onclick = (function (i, j) {
+		                return function () {
+		                    alert('R' + (i + 1) + 'C' + (j + 1));
+		                };
+		            }(i, j));
+		        }
+		    }
+		}
+	    </script>
+	</body>
+</html>

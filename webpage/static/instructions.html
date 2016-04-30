@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <script type="text/javascript">
+	        function changePage(e) {
+	            if (!e) e = event;
+	            window.open("./door_select.html","_self")
+	            document.getElementsByTagName('body')[0].appendChild(nDiv);
+	        }
+
+	        document.onclick = changePage;
+		    // For an explanation of this example...
+		    // http://code.google.com/p/seriality/wiki/Example_Toggle
+
+		    var serial;
+
+		    function setup()
+		    {
+		      serial = (document.getElementById("seriality")).Seriality();
+		      serial.begin("/dev/tty.usbmodem1411", 115200);
+		      serial.write('2 2\r');
+		    }
+	    </script>	
+		<style> 
+			html { 
+			  background: url(tardis_background.jpg) no-repeat center center fixed; 
+			  -webkit-background-size: cover;
+			  -moz-background-size: cover;
+			  -o-background-size: cover;
+			  background-size: cover;
+			}
+			.big_font {
+				font-family: "Times New Roman", Times, serif;
+				font-size: 3em;
+				text-align: center;
+				color: white;
+			    position: absolute;
+			    top: 50%;
+			    left: 50%;
+			    -moz-transform: translateX(-50%) translateY(-50%);
+			    -webkit-transform: translateX(-50%) translateY(-50%);
+			    transform: translateX(-50%) translateY(-50%);
+			}
+			.little_font{
+				font-family: "Times New Roman", Times, serif;
+				font-size: 2em;
+				text-align: center;
+				color: white;
+				position: absolute;
+			    top: 100%;
+			    left: 50%;
+			    -moz-transform: translateX(-50%) translateY(-100%);
+			    -webkit-transform: translateX(-50%) translateY(-100%);
+			    transform: translateX(-50%) translateY(-100%);
+			}
+		</style>
+	</head>
+	<body onload="setup();">
+	  <object type="application/Seriality" id="seriality" width="0" height="0"></object>
+		<div class="big_font">
+		    <span>Please use the cards provided to leave a word of advice or well wish to the bride and groom on their 
+			1&nbsp;month, 3&nbsp;month, 6&nbsp;month, 
+			1&nbsp;year, 5&nbsp;year, or 10&nbsp;year anniversary.
+			</span>
+		</div>
+		<div class="little_font">
+			<span>Press Anywhere to Continue</span>
+		</div>
+
+	</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <script type="text/javascript">
+	    // For an explanation of this example...
+	    // http://code.google.com/p/seriality/wiki/Example_Toggle
+
+	    var serial;
+
+	    function setup()
+	    {
+	      serial = (document.getElementById("seriality")).Seriality();
+	      serial.begin("/dev/tty.usbmodem1411", 115200);
+	      serial.write('2 4\r');
+	    }
+	
+	   setTimeout(function () {
+	       window.location.href = "index.html"; //will redirect to your blog page (an ex: blog.html)
+	    }, 10000); //will call the function after 2 secs.
+
+	  </script>
+		<style> 
+			html { 
+			  background: url(more_tardis_background.jpg) no-repeat center center fixed; 
+			  -webkit-background-size: cover;
+			  -moz-background-size: cover;
+			  -o-background-size: cover;
+			  background-size: cover;
+			}
+			.big_font {
+				font-family: "Times New Roman", Times, serif;
+				font-size: 8em;
+				text-align: center;
+				color: white;
+			    position: absolute;
+			    top: 50%;
+			    left: 50%;
+			    -moz-transform: translateX(-50%) translateY(-50%);
+			    -webkit-transform: translateX(-50%) translateY(-50%);
+			    transform: translateX(-50%) translateY(-50%);
+			}
+			.little_font{
+				font-family: "Times New Roman", Times, serif;
+				font-size: 2em;
+				text-align: center;
+				color: white;
+				position: absolute;
+			    top: 100%;
+			    left: 50%;
+			    -moz-transform: translateX(-50%) translateY(-100%);
+			    -webkit-transform: translateX(-50%) translateY(-100%);
+			    transform: translateX(-50%) translateY(-100%);
+			}
+		</style>
+	</head>
+	<body onload="setup();">
+	  <object type="application/Seriality" id="seriality" width="0" height="0"></object>
+		<div class="big_font">
+		    <span>Please Close Compartment When Finished</span>
+		</div>
+		<div class="little_font">
+			<span>Thank you for leaving your message!</span>
+		</div>
+
+	</body>
+</html>

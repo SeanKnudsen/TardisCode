@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>	
+		<script type="text/javascript">
+		    // For an explanation of this example...
+		    // http://code.google.com/p/seriality/wiki/Example_Toggle
+			window.onload = function() {
+			  var serial;
+
+		      serial = (document.getElementById("seriality")).Seriality();
+		      serial.begin("/dev/tty.usbmodem1411", 115200);
+		      serial.write("2 3\r");
+
+			    var table = document.getElementById("tableID");
+			    if (table != null) {
+			        for (var i = 0; i < table.rows.length; i++) {
+			            for (var j = 0; j < table.rows[i].cells.length; j++)
+			            table.rows[i].cells[j].onclick = function () {
+			                tableText(this);
+			            };
+			        }
+			    }
+
+			    function tableText(tableCell) {
+					var doorNum = tableCell.parentElement.rowIndex-1;
+					var doorCommand = "1 "
+					if(tableCell.cellIndex == 1){
+						doorNum = doorNum + 3;
+					}
+					var doorNumString = doorNum.toString().concat("\r");
+					var doorWrite = doorCommand.concat(doorNumString);
+					serial.write(doorWrite);
+					window.open("./close_door.html","_self")
+		            document.getElementsByTagName('body')[0].appendChild(nDiv);
+			    }
+			};
+		</script>
+		<style> 
+			html { 
+			  background: url(tardis_center.jpg) no-repeat center center fixed; 
+			  -webkit-background-size: cover;
+			  -moz-background-size: cover;
+			  -o-background-size: cover;
+			  background-size: cover;
+			}
+			.big_font {
+				font-family: "Times New Roman", Times, serif;
+				font-size: 2em;
+				text-align: center;
+				color: white;
+			    position: absolute;
+			    top: 50%;
+			    left: 50%;
+			    -moz-transform: translateX(-50%) translateY(-50%);
+			    -webkit-transform: translateX(-50%) translateY(-50%);
+			    transform: translateX(-50%) translateY(-50%);
+			}
+			.little_font{
+				font-family: "Times New Roman", Times, serif;
+				font-size: 1.5em;
+				text-align: center;
+				color: white;
+				position: absolute;
+			    top: 100%;
+			    left: 50%;
+			    -moz-transform: translateX(-50%) translateY(-100%);
+			    -webkit-transform: translateX(-50%) translateY(-100%);
+			    transform: translateX(-50%) translateY(-100%);
+			}
+			table, th, td {
+			    border: 1px solid black;
+			    border-collapse: collapse;
+			}
+			td {
+				background-color:blue;
+			    padding: 50px;
+				width: 150px;
+			}
+			th{
+				background-color:blue;
+				padding: 20px;
+				height: 10px;
+			}
+		</style>
+	</head>
+	<body>
+	  <object type="application/Seriality" id="seriality" width="0" height="0"></object>
+		<div class="big_font">
+			<table id="tableID" style="cursor: pointer;">
+			  <tr>
+			    <th colspan="2" height="20">Select a Compartment</th>
+			  </tr>
+			  <tr>
+			    <td>One&nbsp;Month Anniversary</td>
+			    <td>One&nbsp;Year Anniversary</td>		
+			  </tr>
+			  <tr>
+			    <td>Three&nbsp;Month Anniversary</td>
+			    <td>Five&nbsp;Year Anniversary</td>		
+			  </tr>
+			  <tr>
+			    <td>Six&nbsp;Month Anniversary</td>
+			    <td>Ten&nbsp;Year Anniversary</td>		
+			  </tr>
+			</table>
+		</div>
+	</body>
+</html>
