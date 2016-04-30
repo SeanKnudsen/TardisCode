@@ -9,16 +9,9 @@
 	        }
 
 	        document.onclick = changePage;
-		    // For an explanation of this example...
-		    // http://code.google.com/p/seriality/wiki/Example_Toggle
-
-		    var serial;
 
 		    function setup()
 		    {
-		      serial = (document.getElementById("seriality")).Seriality();
-		      serial.begin("/dev/tty.usbmodem1411", 115200);
-		      serial.write('2 2\r');
 		    }
 	    </script>	
 		<style> 
@@ -56,7 +49,6 @@
 		</style>
 	</head>
 	<body onload="setup();">
-	  <object type="application/Seriality" id="seriality" width="0" height="0"></object>
 		<div class="big_font">
 		    <span>Please use the cards provided to leave a word of advice or well wish to the bride and groom on their 
 			1&nbsp;month, 3&nbsp;month, 6&nbsp;month, 

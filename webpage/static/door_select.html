@@ -2,14 +2,7 @@
 <html>
 	<head>	
 		<script type="text/javascript">
-		    // For an explanation of this example...
-		    // http://code.google.com/p/seriality/wiki/Example_Toggle
 			window.onload = function() {
-			  var serial;
-
-		      serial = (document.getElementById("seriality")).Seriality();
-		      serial.begin("/dev/tty.usbmodem1411", 115200);
-		      serial.write("2 3\r");
 
 			    var table = document.getElementById("tableID");
 			    if (table != null) {
@@ -27,9 +20,9 @@
 					if(tableCell.cellIndex == 1){
 						doorNum = doorNum + 3;
 					}
-					var doorNumString = doorNum.toString().concat("\r");
-					var doorWrite = doorCommand.concat(doorNumString);
-					serial.write(doorWrite);
+                                        var oReq = new XMLHttpRequest();
+                                        oReq.open("GET", "/open/" + doorNum.toString());
+                                        oReq.send();
 					window.open("./close_door.html","_self")
 		            document.getElementsByTagName('body')[0].appendChild(nDiv);
 			    }
@@ -84,7 +77,6 @@
 		</style>
 	</head>
 	<body>
-	  <object type="application/Seriality" id="seriality" width="0" height="0"></object>
 		<div class="big_font">
 			<table id="tableID" style="cursor: pointer;">
 			  <tr>
