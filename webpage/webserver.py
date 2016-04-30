@@ -7,8 +7,11 @@ app = Flask(__name__)
 
 @app.after_request
 def add_header(response):    
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
+    if flask.request.url.endswith('.html'):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+    else:
+        response.headers['Cache-Control'] = 'max-age=6000'
     return response
 
 @app.route("/open/<door>")
