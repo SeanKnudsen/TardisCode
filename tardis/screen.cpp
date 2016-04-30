@@ -197,7 +197,7 @@ void Screen::showStdLatLon(double latdeg, double latmin, double londeg, double l
 {
   double targetDistance = 0.0;
   int feet = 0;
- 
+   display.setFont();
   initLCD(1); // initialize LCD for size 1
 
   
