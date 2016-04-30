@@ -213,8 +213,6 @@ void Tardis::do_update()
 
             break;
           }
-
-        
             // TODO: implement timeout to go back to shelfClockMode
           break;
         case shelfMissionReady:
@@ -230,15 +228,7 @@ void Tardis::do_update()
       break;
   }
 
-
-
-
-
-  
-
 }
-
-
 
 void Tardis::do_output()
 {
