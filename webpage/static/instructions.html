@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	    <script type="text/javascript">
-	        function changePage(e) {
-	            if (!e) e = event;
-	            window.open("./door_select.html","_self")
-	            document.getElementsByTagName('body')[0].appendChild(nDiv);
-	        }
-
-	        document.onclick = changePage;
-
-		    function setup()
-		    {
-		    }
-	    </script>	
 		<style> 
 			html { 
 			  background: url(tardis_background.jpg) no-repeat center center fixed; 
@@ -48,7 +35,9 @@
 			}
 		</style>
 	</head>
-	<body onload="setup();">
+	<body>
+            <a href="/door_select.html">
+                <div id="wrapper">
 		<div class="big_font">
 		    <span>Please use the cards provided to leave a word of advice or well wish to the bride and groom on their 
 			1&nbsp;month, 3&nbsp;month, 6&nbsp;month, 
@@ -58,6 +47,7 @@
 		<div class="little_font">
 			<span>Press Anywhere to Continue</span>
 		</div>
-
+                </div>
+            </a>
 	</body>
 </html>

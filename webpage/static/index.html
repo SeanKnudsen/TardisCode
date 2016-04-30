@@ -1,20 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	    <script type="text/javascript">
-	        function changePage(e) {
-	            if (!e) e = event;
-	            window.open("./instructions.html","_self")
-	            document.getElementsByTagName('body')[0].appendChild(nDiv);
-	        }
-
-	        document.onclick = changePage;
-
-	    function setup()
-	    {
-	    }
-
-	  </script>
 		<style> 
 			html { 
 			  background: url(space_background.jpg) no-repeat center center fixed; 
@@ -23,6 +9,14 @@
 			  -o-background-size: cover;
 			  background-size: cover;
 			}
+                        html, body {
+                          height: 100%;
+                          margin: 0;
+                        }
+
+                        #wrapper {
+                          min-height: 100%; 
+                        }
 			.big_font {
 				font-family: "Times New Roman", Times, serif;
 				font-size: 7em;
@@ -49,13 +43,16 @@
 			}
 		</style>
 	</head>
-	<body onload="setup();">
+	<body>
+            <a href="/instructions.html">
+                <div id="wrapper">
 		<div class="big_font">
 		    <span>Congratulations Connie and Erik!</span>
 		</div>
 		<div class="little_font">
 			<span>Press Anywhere to Continue</span>
 		</div>
-
+                </div>
+            </a>
 	</body>
 </html>

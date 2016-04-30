@@ -1,33 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>	
-		<script type="text/javascript">
-			window.onload = function() {
-
-			    var table = document.getElementById("tableID");
-			    if (table != null) {
-			        for (var i = 0; i < table.rows.length; i++) {
-			            for (var j = 0; j < table.rows[i].cells.length; j++)
-			            table.rows[i].cells[j].onclick = function () {
-			                tableText(this);
-			            };
-			        }
-			    }
-
-			    function tableText(tableCell) {
-					var doorNum = tableCell.parentElement.rowIndex-1;
-					var doorCommand = "1 "
-					if(tableCell.cellIndex == 1){
-						doorNum = doorNum + 3;
-					}
-                                        var oReq = new XMLHttpRequest();
-                                        oReq.open("GET", "/open/" + doorNum.toString());
-                                        oReq.send();
-					window.open("./close_door.html","_self")
-		            document.getElementsByTagName('body')[0].appendChild(nDiv);
-			    }
-			};
-		</script>
 		<style> 
 			html { 
 			  background: url(tardis_center.jpg) no-repeat center center fixed; 
@@ -66,9 +39,15 @@
 			}
 			td {
 				background-color:blue;
-			    padding: 50px;
-				width: 150px;
 			}
+                        td div {
+                            width: 160px;
+			    padding: 50px;
+                        }
+                        td a {
+                            text-decoration: none;
+                            color: white;
+                        }
 			th{
 				background-color:blue;
 				padding: 20px;
@@ -76,23 +55,23 @@
 			}
 		</style>
 	</head>
-	<body>
+	<body  style="cursor: pointer;">
 		<div class="big_font">
-			<table id="tableID" style="cursor: pointer;">
+			<table id="tableID">
 			  <tr>
 			    <th colspan="2" height="20">Select a Compartment</th>
 			  </tr>
 			  <tr>
-			    <td>One&nbsp;Month Anniversary</td>
-			    <td>One&nbsp;Year Anniversary</td>		
+                              <td><a href='/open/0'><div>One&nbsp;Month Anniversary</div></a></td>
+                              <td><a href='/open/1'><div>One&nbsp;Year Anniversary</div></a></td>		
 			  </tr>
 			  <tr>
-			    <td>Three&nbsp;Month Anniversary</td>
-			    <td>Five&nbsp;Year Anniversary</td>		
+                              <td><a href='/open/2'><div>Three&nbsp;Month Anniversary</div></a></td>
+                              <td><a href='/open/3'><div>Five&nbsp;Year Anniversary</div></a></td>		
 			  </tr>
 			  <tr>
-			    <td>Six&nbsp;Month Anniversary</td>
-			    <td>Ten&nbsp;Year Anniversary</td>		
+                              <td><a href='/open/4'><div>Six&nbsp;Month Anniversary</div></a></td>
+                              <td><a href='/open/5'><div>Ten&nbsp;Year Anniversary</div></a></td>		
 			  </tr>
 			</table>
 		</div>
