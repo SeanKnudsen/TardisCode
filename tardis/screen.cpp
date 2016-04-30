@@ -302,7 +302,7 @@ void Screen::updateScreen()
 {
   if(updateNeeded)
   {
-    // display.display();
+    display.display();
     updateNeeded = true;
   }
   updateNeeded = false;
