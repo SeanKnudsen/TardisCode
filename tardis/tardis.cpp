@@ -9,6 +9,7 @@ SerialCom serialcom = SerialCom();
 
 bool batteryPower = false;
 
+HSVInterpolator cap = HSVInterpolator(HSV(0.0, 0.0, 1.0), HSV(0.0, 0.0, 0.0), 0, 2500);
 
 Tardis::Tardis() :
   pixel(Adafruit_NeoPixel(NEOPIXEL_NUM, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800)),
@@ -192,7 +193,8 @@ void Tardis::do_update()
                   screen.showConnieLovesErik();
                   break;
           }
-          color.r = 255;
+
+          color = cap.interpolate(abs((int)(now % 5001) - 2500)).toRgb();
           pixel.setPixelColor(0, color.r, color.g, color.b);
        
           updateSolenoids();
