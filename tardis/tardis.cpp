@@ -169,23 +169,25 @@ void Tardis::do_update()
       switch(shelfState)
       {
         case shelfClock:
-          if((now - lastShowTime) >=1000)
-          {
-            screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
-            lastShowTime = now;
 
-           }
 
           // TODO: demo update state.
           switch ((now / 30000) % 3) {
               case 0:
                   pulse_update(strip, now);
+                  if((now - lastShowTime) >=1000)
+                  {
+                    screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
+                    lastShowTime = now;
+                  }
                   break;
               case 1:
                   solid_fader_update(strip, now);
+                  screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
                   break;
               case 2:
                   chaser_update(strip, now);
+                  screen.showConnieLovesErik();
                   break;
           }
           color.r = 255;
@@ -197,7 +199,8 @@ void Tardis::do_update()
         
           if(button.MenuPress)
           {
-            shelfState = shelfMenu;
+            //uncomment to allow button to do anything
+           // shelfState = shelfMenu;
             
           }
 
