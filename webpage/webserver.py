@@ -5,6 +5,12 @@ import serial
 from flask import Flask
 app = Flask(__name__)
 
+@app.after_request
+def add_header(response):    
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    return response
+
 @app.route("/open/<door>")
 def hello(door):
     string = b'1 {}\r'.format(door)
@@ -35,4 +41,4 @@ def serve(filename):
 
 if __name__ == "__main__":
     print "hello world"
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

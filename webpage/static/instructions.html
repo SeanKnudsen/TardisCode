@@ -1,7 +1,27 @@
 <!DOCTYPE html>
 <html>
 	<head>
-            <meta name="viewport" content="width=device-width, user-scalable=false"">
+            <meta name="viewport" content="width=device-width, user-scalable=no, minimal-ui">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+    <script type="text/javascript">
+        (function(document,navigator,standalone) {
+            // prevents links from apps from oppening in mobile safari
+            // this javascript must be the first script in your <head>
+            if ((standalone in navigator) && navigator[standalone]) {
+                var curnode, location=document.location, stop=/^(a|html)$/i;
+                document.addEventListener('click', function(e) {
+                    curnode=e.target;
+                    while (!(stop).test(curnode.nodeName)) {
+                        curnode=curnode.parentNode;
+                    }
+                    if('href' in curnode ) {
+                        e.preventDefault();
+                        location.href = curnode.href;
+                    }
+                },false);
+            }
+        })(document,window.navigator,'standalone');
+    </script>
 		<style> 
 			html { 
 			  background: url(black.png) no-repeat center center fixed; 
@@ -18,6 +38,7 @@
 			  background-size: contain;
 			}
                         html, body {
+                          -webkit-touch-callout: none;
                           height: 100%;
                           margin: 0;
                         }
