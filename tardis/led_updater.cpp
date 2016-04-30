@@ -69,3 +69,12 @@ void pulse_update(Adafruit_DotStar& strip, unsigned long now) {
         strip.setPixelColor(LED_lut[i], color.g, color.r, color.b);
     }
 }
+void random_update(Adafruit_DotStar& strip, unsigned long now) {
+    if ((now % 1000) == 0) {
+    for( int i=0; i < 96; i++) {
+        // strip pixels are GRB
+          RGB color = HSV(float(random(255))/255.0, 1.0, 0.5).toRgb();
+          strip.setPixelColor(i, color.g, color.r, color.b);
+    }
+    }
+}

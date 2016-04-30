@@ -173,9 +173,9 @@ void Tardis::do_update()
 
 
           // TODO: demo update state.
-          switch ((now / 30000) % 3) {
+          switch ((now / 30000) % 4) {
               case 0:
-                  pulse_update(strip, now);
+                  random_update(strip, now);
                   if((now - lastShowTime) >=1000)
                   {
                     screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
@@ -190,6 +190,10 @@ void Tardis::do_update()
                   break;
               case 2:
                   chaser_update(strip, now);
+                  screen.showConnieLovesErik();
+                  break;
+              case 3:
+                  pulse_update(strip, now);
                   screen.showConnieLovesErik();
                   break;
           }
