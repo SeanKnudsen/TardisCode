@@ -17,6 +17,20 @@ def hello(door):
 
 @app.route('/<filename>')
 def serve(filename):
+    light = {
+        'index.html': 1,
+        'instructions.html': 2,
+        'door_select.html': 3,
+        'close_door.html': 4,
+    }
+
+    try:
+        with serial.Serial('/dev/tty.usbmodem1411', 115200, timeout=1) as ser:
+            string = b'2 {}\r'.format(light[filename])
+            ser.write(string)
+    except serial.serialutil.SerialException:
+        pass
+
     return flask.send_from_directory('static', filename)
 
 if __name__ == "__main__":

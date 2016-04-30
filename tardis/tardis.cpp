@@ -136,6 +136,7 @@ void Tardis::do_input()
         break;
 
       case 2:
+        // Pattern displayed here?
  
         break;
     }
