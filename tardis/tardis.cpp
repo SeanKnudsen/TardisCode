@@ -11,6 +11,14 @@ bool batteryPower = false;
 
 HSVInterpolator cap = HSVInterpolator(HSV(0.0, 0.0, 1.0), HSV(0.0, 0.0, 0.0), 0, 2500);
 
+HSVInterpolator i_inst = HSVInterpolator(HSV(0.42, 0.0, 1.0), HSV(0.42, 0.0, 0.0), 0, 25);
+HSVInterpolator i_door = HSVInterpolator(HSV(0.58, 0.0, 1.0), HSV(0.58, 0.0, 0.0), 0, 25);
+HSVInterpolator i_clos = HSVInterpolator(HSV(0.0, 0.0, 1.0), HSV(0.0, 0.0, 0.0), 0, 25);
+HSVInterpolator i_home = HSVInterpolator(HSV(0.7, 0.0, 1.0), HSV(0.7, 0.0, 0.0), 0, 25);
+unsigned long flash_start = 0;
+int flash_pattern = 1;
+
+
 Tardis::Tardis() :
   pixel(Adafruit_NeoPixel(NEOPIXEL_NUM, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800)),
   strip(Adafruit_DotStar(DOTSTAR_COUNT, DOTSTAR_BRG)),
@@ -137,6 +145,8 @@ void Tardis::do_input()
 
       case 2:
         // Pattern displayed here?
+        flash_start = millis();
+        flash_pattern = serialcom.cmdParam;
  
         break;
     }
@@ -174,29 +184,53 @@ void Tardis::do_update()
 
 
           // TODO: demo update state.
-          switch ((now / 30000) % 4) {
-              case 0:
-                  random_update(strip, now);
-                  if((now - lastShowTime) >=1000)
-                  {
-                    screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
-                    lastShowTime = now;
-                  }
-                  break;
-              case 1:
-                  solid_fader_update(strip, now);
-                  //screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
-                  screen.showConnieLovesErik();
-                  
-                  break;
-              case 2:
-                  chaser_update(strip, now);
-                  screen.showConnieLovesErik();
-                  break;
-              case 3:
-                  pulse_update(strip, now);
-                  screen.showConnieLovesErik();
-                  break;
+          if (flash_start != 0) {
+              switch (flash_pattern) {
+                  case 1:
+                      color = i_home.interpolate(abs((int)(now % 51) - 25)).toRgb();
+                      break;
+                  case 2:
+                      color = i_inst.interpolate(abs((int)(now % 51) - 25)).toRgb();
+                      break;
+                  case 3:
+                      color = i_door.interpolate(abs((int)(now % 51) - 25)).toRgb();
+                      break;
+                  case 4:
+                      color = i_clos.interpolate(abs((int)(now % 51) - 25)).toRgb();
+                      break;
+              }
+              for (int i = 0; i < 96; i++) {
+                  strip.setPixelColor(i, color.g, color.r, color.b);
+              }
+
+              if ((now - flash_start) > 500) {
+                  flash_start = 0;
+              }
+          } else {
+              switch ((now / 30000) % 4) {
+                  case 0:
+                      random_update(strip, now);
+                      if((now - lastShowTime) >=1000)
+                      {
+                        screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
+                        lastShowTime = now;
+                      }
+                      break;
+                  case 1:
+                      solid_fader_update(strip, now);
+                      //screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
+                      screen.showConnieLovesErik();
+                      
+                      break;
+                  case 2:
+                      chaser_update(strip, now);
+                      screen.showConnieLovesErik();
+                      break;
+                  case 3:
+                      pulse_update(strip, now);
+                      screen.showConnieLovesErik();
+                      break;
+              }
           }
 
           color = cap.interpolate(abs((int)(now % 5001) - 2500)).toRgb();
