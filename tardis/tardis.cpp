@@ -183,7 +183,9 @@ void Tardis::do_update()
                   break;
               case 1:
                   solid_fader_update(strip, now);
-                  screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
+                  //screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
+                  screen.showConnieLovesErik();
+                  
                   break;
               case 2:
                   chaser_update(strip, now);
