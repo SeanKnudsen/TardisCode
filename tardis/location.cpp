@@ -51,8 +51,7 @@ void Location::collectGPS()
 {
    char c = gps.read();
   // if you want to debug, this is a good time to do it!
-  if ((c) && (GPSECHO))
-    Serial.write(c); 
+  if ((c) && (GPSECHO)) {}
 
   //Serial.print(c);
   //Serial.println("collectGPS()");

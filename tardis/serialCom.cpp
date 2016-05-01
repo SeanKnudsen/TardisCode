@@ -29,7 +29,6 @@ void SerialCom::read()
      // if you want to debug, this is a good time to do it!
   if (c&&(ECHOINPUT))
   {
-    Serial.write(c); 
   }
   }
    
@@ -50,18 +49,15 @@ void SerialCom::checkForCommand()
   read();
   if(arrayLength >=PACKET_LENGTH)
   {
-    Serial.write("Packet length good\n");
     //check for command
     temp = inputArray[0];
     if(isCommand(temp))
     {
-      Serial.write("Command Good\n");
       if((inputArray[1] == ' ') && (inputArray[3] == '\r'))
       {
         gotCommand = true;
         cmdCommand = inputArray[0] - '0';
         cmdParam = inputArray[2] - '0';
-        Serial.write("ACK\n");
 
         
       }
@@ -73,7 +69,6 @@ void SerialCom::checkForCommand()
 
 void SerialCom::writeStr(int str)
 {
-  Serial.write(str);
 }
 
 void SerialCom::clearArray()
