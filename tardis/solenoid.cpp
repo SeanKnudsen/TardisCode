@@ -11,6 +11,15 @@ Solenoid::Solenoid(Adafruit_DCMotor *m, Solenoid_Half h):
 	Solenoid::numSolenoids++;
 }
 
+Solenoid::Solenoid(Adafruit_MotorShield *ms, Motor_Num mn, Solenoid_Half h):
+  motor(ms->getMotor(mn)),
+  half(h),
+  state(REST),
+  energize_req(false)
+{
+	Solenoid::numSolenoids++;
+}
+
 void Solenoid::setup() {
   motor->setFullSpeed();
 }

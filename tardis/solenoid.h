@@ -14,12 +14,20 @@ enum Solenoid_Half {
   OUTER
 };
 
+enum Motor_Num {
+	M1 = 1,
+	M2,
+	M3,
+	M4
+};
+
 #define ENERGIZE_TIME 250
 #define COOL_DOWN_TIME 10000
 
 class Solenoid {
   public:
     Solenoid(Adafruit_DCMotor *m, Solenoid_Half h);
+    Solenoid(Adafruit_MotorShield *ms, Motor_Num mn, Solenoid_Half h);
     void setup();
     bool energize();
     void update(unsigned long now);

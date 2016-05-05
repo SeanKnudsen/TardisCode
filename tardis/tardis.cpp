@@ -28,12 +28,12 @@ Tardis::Tardis() :
   motor_shield(Adafruit_MotorShield()),
   interpolate(HSVInterpolator(HSV(0.0, 1.0, 1.0), HSV(1.0, 1.0, 1.0), 0, 50000))
 {
-  solenoids[0] = new Solenoid(motor_shield.getMotor(1), OUTER);
-  solenoids[1] = new Solenoid(motor_shield.getMotor(2), INNER);
-  solenoids[2] = new Solenoid(motor_shield.getMotor(3), OUTER);
-  solenoids[3] = new Solenoid(motor_shield.getMotor(1), INNER);
-  solenoids[4] = new Solenoid(motor_shield.getMotor(2), OUTER);
-  solenoids[5] = new Solenoid(motor_shield.getMotor(3), INNER);
+  solenoids[0] = new Solenoid(&motor_shield, M1, OUTER); 			// Top Left
+  solenoids[1] = new Solenoid(&motor_shield, M2, INNER);			// Mid Left
+  solenoids[2] = new Solenoid(&motor_shield, M3, OUTER);			// Bottom Left
+  solenoids[3] = new Solenoid(&motor_shield, M1, INNER);			// Top Right
+  solenoids[4] = new Solenoid(&motor_shield, M2, OUTER);			// Mid Right
+  solenoids[5] = new Solenoid(&motor_shield, M3, INNER);			// Bottom Right
 
 // Power switch 32, 33; Switch closed when on wall power (we think!)
   pinMode(32, OUTPUT);
