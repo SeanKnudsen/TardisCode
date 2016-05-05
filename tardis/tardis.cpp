@@ -28,6 +28,14 @@ Tardis::Tardis() :
   motor_shield(Adafruit_MotorShield()),
   interpolate(HSVInterpolator(HSV(0.0, 1.0, 1.0), HSV(1.0, 1.0, 1.0), 0, 50000))
 {
+// Tardis Doors
+// +-----+
+// | ░ ░ |
+// | 0 3 |
+// | 1 4 |
+// | 2 5 |
+// +-----+
+
   solenoids[0] = new Solenoid(motor_shield.getMotor(1), OUTER);
   solenoids[1] = new Solenoid(motor_shield.getMotor(2), INNER);
   solenoids[2] = new Solenoid(motor_shield.getMotor(3), OUTER);
@@ -116,11 +124,6 @@ void Tardis::solenoidTest()
   }
 }
 
-// Andrews Doors
-//  ------
-// | 1 4 |
-// | 2 5 |
-// | 3 6 |
 
 
 
