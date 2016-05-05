@@ -1,11 +1,14 @@
 #include "solenoid.h"
 
+int Solenoid::numSolenoids = 0;
+
 Solenoid::Solenoid(Adafruit_DCMotor *m, Solenoid_Half h):
   motor(m),
   half(h),
   state(REST),
   energize_req(false)
 {
+	Solenoid::numSolenoids++;
 }
 
 void Solenoid::setup() {

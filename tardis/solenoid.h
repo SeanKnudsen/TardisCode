@@ -30,6 +30,7 @@ class Solenoid {
     Solenoid_State state;
     bool energize_req;
     unsigned long start;
+    static int numSolenoids;
 };
 
 #endif
