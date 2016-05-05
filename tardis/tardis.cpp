@@ -59,13 +59,6 @@ void pin_ISR()
 }
 */
 
-void Tardis::updateSolenoids()
-{
-  unsigned long now = millis();
-  for (int i=0; i < SOLENOIDS_NUM; i++) {
-    solenoids[i]->update(now);
-  }
-}
 
 void Tardis::setup()
 {
@@ -236,7 +229,7 @@ void Tardis::do_update()
           color = cap.interpolate(abs((int)(now % 5001) - 2500)).toRgb();
           pixel.setPixelColor(0, color.r, color.g, color.b);
        
-          updateSolenoids();
+          Solenoid::updateAll();
 
 
         
@@ -304,7 +297,7 @@ void Tardis::do_update()
 
 void Tardis::do_output()
 {
-  updateSolenoids();
+  Solenoid::updateAll();
   strip.show();
   pixel.show();  // clear immediately.
   screen.updateScreen();

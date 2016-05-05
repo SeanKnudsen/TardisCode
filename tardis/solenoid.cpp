@@ -1,6 +1,7 @@
 #include "solenoid.h"
 
 int Solenoid::numSolenoids = 0;
+Solenoid* Solenoid::solenoids[SOLENOIDS_MAX] = {NULL};
 
 Solenoid::Solenoid(Adafruit_DCMotor *m, Solenoid_Half h):
   motor(m),
@@ -8,6 +9,7 @@ Solenoid::Solenoid(Adafruit_DCMotor *m, Solenoid_Half h):
   state(REST),
   energize_req(false)
 {
+	Solenoid::solenoids[numSolenoids] = this;
 	Solenoid::numSolenoids++;
 }
 
@@ -17,7 +19,16 @@ Solenoid::Solenoid(Adafruit_MotorShield *ms, Motor_Num mn, Solenoid_Half h):
   state(REST),
   energize_req(false)
 {
+	Solenoid::solenoids[numSolenoids] = this;
 	Solenoid::numSolenoids++;
+}
+
+void Solenoid::updateAll() {
+	uint8_t i = 0;
+	unsigned long now = millis();
+	while ( solenoids[i] ) {
+		solenoids[i]->update(now);
+	}
 }
 
 void Solenoid::setup() {

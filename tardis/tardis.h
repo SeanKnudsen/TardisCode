@@ -84,7 +84,6 @@ class Tardis {
     void do_output();
     void doCollectGPS();
     void solenoidTest();
-    void updateSolenoids();
   // These should probably be private but whatever.
 
     Adafruit_DotStar strip;

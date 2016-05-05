@@ -3,6 +3,8 @@
 
 #include <Adafruit_MotorShield.h>
 
+#define SOLENOIDS_MAX 8
+
 enum Solenoid_State {
   REST,
   ENERGIZED,
@@ -32,6 +34,7 @@ class Solenoid {
     bool energize();
     void update(unsigned long now);
     Solenoid_State getState();
+    static void updateAll();
   private:
     Adafruit_DCMotor *motor;
     Solenoid_Half half;
@@ -39,6 +42,7 @@ class Solenoid {
     bool energize_req;
     unsigned long start;
     static int numSolenoids;
+    static Solenoid* solenoids[SOLENOIDS_MAX];
 };
 
 #endif
