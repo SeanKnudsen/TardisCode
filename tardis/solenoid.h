@@ -34,6 +34,7 @@ class Solenoid {
     bool energize();
     void update(unsigned long now);
     Solenoid_State getState();
+    static void testAll();
     static void updateAll();
   private:
     Adafruit_DCMotor *motor;

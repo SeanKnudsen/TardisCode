@@ -23,6 +23,20 @@ Solenoid::Solenoid(Adafruit_MotorShield *ms, Motor_Num mn, Solenoid_Half h):
 	Solenoid::numSolenoids++;
 }
 
+// steps through activating one solenoid at a time, must still update
+// TODO: test
+// TODO: consider what happens when there's only one solenoid
+void Solenoid::testAll() {
+  static uint8_t activeSolenoid = numSolenoids-1;
+  static uint8_t nextSolenoid = (activeSolenoid+1)%numSolenoids;
+  
+  if ( solenoids[activeSolenoid]->getState() == REST && solenoids[nextSolenoid]->getState() == REST ) {
+    activeSolenoid = nextSolenoid;
+    solenoids[activeSolenoid]->energize();
+    nextSolenoid = (activeSolenoid+1)%numSolenoids;
+  }
+}
+
 void Solenoid::updateAll() {
 	uint8_t i = 0;
 	unsigned long now = millis();

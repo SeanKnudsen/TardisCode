@@ -99,15 +99,6 @@ void Tardis:: doCollectGPS()
   location.collectGPS();
 }
 
-void Tardis::solenoidTest()
-{
-  static int activeSolenoid = SOLENOIDS_NUM-1;
-  
-  if ( solenoids[activeSolenoid]->getState() == REST && solenoids[(activeSolenoid+1)%SOLENOIDS_NUM]->getState() == REST ) {
-    activeSolenoid = (activeSolenoid+1) % SOLENOIDS_NUM;
-    solenoids[activeSolenoid]->energize();
-  }
-}
 
 // Andrews Doors
 //  ------
