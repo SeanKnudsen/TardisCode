@@ -4,7 +4,8 @@ import serial
 
 from flask import Flask
 app = Flask(__name__)
-ser = serial.Serial('/dev/tty.usbmodem1411', 115200, timeout=1)
+ser = serial.Serial('/dev/tty.usbmodem1411', 115200, timeout=1) # thom's 
+# ser = serial.Serial('/dev/tty.usbmodemFA131', 115200, timeout=1) # john's
 
 @app.after_request
 def add_header(response):    
