@@ -1,6 +1,7 @@
 #include "location.h"
-
-
+//                          Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+byte calendarMonth[]     = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+byte calendarMonthLeap[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // I'm not a proud man...
 
 //  Constructor
 Location::Location() :
@@ -29,6 +30,7 @@ void Location::setup()
   // Set the update rate
   gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);   // 1 Hz update rate
 
+  utcOffset = TIME_OFFSET; 
   useInterrupt(true);
 }
 
@@ -49,6 +51,7 @@ void Location::useInterrupt(boolean v) {
 
 void Location::collectGPS()
 {
+  int tempDay;
    char c = gps.read();
   // if you want to debug, this is a good time to do it!
   if ((c) && (GPSECHO)) {}
@@ -75,12 +78,97 @@ void Location::collectGPS()
         //Serial.print(LatDeg); Serial.print(" "); Serial.println(LatMin);
         
         Altitude = gps.altitude;
-        Distance = dist(Latitude, Longitude);      
-        Hour = gps.hour;
+        Distance = dist(Latitude, Longitude);  
+            
         Minute = gps.minute;
-        Year = gps.year;
-        Month = gps.month;
-        Day = gps.day;       
+        Hour = (24 + gps.hour + utcOffset)%24;
+
+        // **********************              WHAT DAY IS IT?!?!?!?!!          **********************
+        if(utcOffset < 0)
+        {
+          // negative offset
+          
+          if(gps.hour < (-1 * utcOffset))
+          {
+            // gps.hour has already rolled over. (e.g. utc time is 3AM, but offset is -4 means it's 11PM the day before!
+            // we can just decrement a day, unless it's the first day of the UTC month, in which case we need to know the days in a month
+            if(gps.day == 1)
+            {
+               // UTC next day
+              if(gps.year%4)
+              {
+                tempDay = calendarMonthLeap[(gps.month - 1) - 1];
+              }
+              else
+              {
+                tempDay = calendarMonth[(gps.month - 1) - 1];
+              }
+
+              Month = (gps.month == 1) ? 12 : gps.month - 1;
+              Year = (gps.month == 1) ? gps.year - 1 : gps.year;
+            }
+            else
+            {
+              tempDay = gps.day - 1;
+              Month = gps.month;
+              Year = gps.year;
+            }
+          }
+          else
+          {
+            tempDay = gps.day;
+            Month = gps.month;
+            Year = gps.year;
+          }
+        }
+        else if (utcOffset > 0)
+        {
+          if (gps.hour + utcOffset > 24)
+          {
+            if(gps.year%4)
+            {
+              // leap year!
+              if(gps.day == calendarMonthLeap[gps.month -1])
+              {
+                // last day of the utc month, 1st day local time
+                tempDay = 1;
+              }
+              else
+              {
+                tempDay = gps.day + 1;
+              }
+            }
+            else
+            {
+              if(gps.day == calendarMonth[gps.month -1])
+              {
+                // last day of the utc month, 1st day local time
+                tempDay = 1;
+              }
+              else
+              {
+                tempDay = gps.day + 1;
+              }
+            }
+
+            Month = (gps.month == 12) ? 1 : (gps.month + 1);
+            Year = (gps.month == 12) ? gps.year + 1 : gps.year;
+          }
+          else
+          {
+            tempDay = gps.day + 1;
+            Month = gps.month;
+            Year = gps.year;
+          }
+        }
+        else
+        {
+          tempDay = gps.day;
+          Month = gps.month;
+          Year = gps.year;
+        }  
+
+        Day = tempDay;
       }
     }     
   }

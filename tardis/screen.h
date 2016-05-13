@@ -8,7 +8,7 @@
 #endif
 #include <Fonts/FreeMono9pt7b.h>
 #include "art.h"
-#define TIME_OFFSET -7
+// #define TIME_OFFSET -7
 // Should this be defined here?
 #define OLED_RESET 41
 
@@ -27,11 +27,11 @@ class Screen {
     
     void showConnieLovesErik();
     void showNoGPS();
-    void showUTCOffset(uint8_t selection);
+    void showUTCOffset(uint8_t selection, int utcOffset);
     void updateScreen();
     Adafruit_SSD1306 display;
 
-    int utcOffset;
+    int newUtcOffset;
   private:
     void initLCD(int size);
     void displayCoordinate(int degree, float minute);

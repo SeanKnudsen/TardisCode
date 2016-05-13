@@ -11,7 +11,7 @@ bool updateNeeded = false;
 void Screen::setup()
 {
    display.begin(SSD1306_SWITCHCAPVCC, 0x3D);  // initialize with the I2C addr 0x3D (for the 128x64)  
-   utcOffset = TIME_OFFSET; 
+   // utcOffset = TIME_OFFSET; 
    updateNeeded = false;
 }
 
@@ -126,7 +126,7 @@ void Screen::showLEDMenu(uint8_t selection)
   }
 }
 
-void Screen::showUTCOffset(uint8_t selection)
+void Screen::showUTCOffset(uint8_t selection, int utcOffset)
 {
   int screenOptions = 2;
   if(selection > 0 && selection <= screenOptions)
@@ -253,7 +253,7 @@ void Screen::showTime(uint8_t minute, uint8_t hour, uint8_t day, uint8_t month, 
   display.print(day); display.print('/');  display.print(year); display.print("\r\n");
 
   display.print("   ");
-  hour = (24 + hour + utcOffset)%24;
+  // hour = (24 + hour + utcOffset)%24;
   dispHour = hour %12;
   if(dispHour == 0)
   {

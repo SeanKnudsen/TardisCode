@@ -18,6 +18,8 @@
 #define TARGET_LON 122.18388055555556
 #define FOUND_DISTANCE 35 // if you're within 35 feet, you've got it!
 
+#define TIME_OFFSET -7
+
 /* Example coordinates */
 // Sean's house:         37.80956388888889, 122.18388055555556
 // Jamieson Rach Winery: 38.22041388888889, 122.22920833333333
@@ -49,6 +51,8 @@ class Location {
     uint8_t Year;
     uint8_t Month;
     uint8_t Day;
+
+    int utcOffset;
 
 // set target
 // atTarget
