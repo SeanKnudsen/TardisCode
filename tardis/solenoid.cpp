@@ -13,6 +13,7 @@ Solenoid::Solenoid(Adafruit_DCMotor *m, Solenoid_Half h):
 	Solenoid::numSolenoids++;
 }
 
+// TODO: instead of sequentially populating solenoids[], map each to unique index ((mn-1)*2 + h)
 Solenoid::Solenoid(Adafruit_MotorShield *ms, Motor_Num mn, Solenoid_Half h):
   motor(ms->getMotor(mn)),
   half(h),
@@ -37,11 +38,27 @@ void Solenoid::testAll() {
   }
 }
 
+// TODO: see if this can work in a timer driven ISR
 void Solenoid::updateAll() {
-	uint8_t i = 0;
+	uint8_t i;
 	unsigned long now = millis();
-	while ( solenoids[i] ) {
-		solenoids[i]->update(now);
+	for ( i = 0; i < SOLENOIDS_MAX; i++ ) {
+		if ( solenoids[i] ) {
+			solenoids[i]->update(now);
+		} else {
+			break;
+		}
+	}
+}
+
+void Solenoid::beginAll() {
+	uint8_t i;
+	for ( i = 0; i < SOLENOIDS_MAX; i++ ) {
+		if ( solenoids[i] ) {
+			solenoids[i]->setup();
+		} else {
+			break;
+		}
 	}
 }
 

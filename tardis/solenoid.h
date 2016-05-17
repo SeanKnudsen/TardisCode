@@ -12,7 +12,7 @@ enum Solenoid_State {
 };
 
 enum Solenoid_Half {
-  INNER,
+  INNER = 0,
   OUTER
 };
 
@@ -36,6 +36,7 @@ class Solenoid {
     Solenoid_State getState();
     static void testAll();
     static void updateAll();
+    static void beginAll();
   private:
     Adafruit_DCMotor *motor;
     Solenoid_Half half;
