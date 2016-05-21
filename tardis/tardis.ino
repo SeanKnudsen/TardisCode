@@ -13,5 +13,5 @@ void loop() {
 
 // Interrupt called 1/millisecond, looks for GPS data and stores it.
 SIGNAL(TIMER0_COMPA_vect) {
-  tardis.doCollectGPS();
+  tardis.do_timerUpdate();
 }

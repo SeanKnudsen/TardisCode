@@ -102,7 +102,7 @@ void Tardis::setup()
   }
 }
 
-void Tardis:: doCollectGPS()
+void Tardis::do_timerUpdate()
 {
   location.collectGPS();
 }
