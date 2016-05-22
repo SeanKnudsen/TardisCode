@@ -212,8 +212,11 @@ void Tardis::do_update()
                   case 1:
                       solid_fader_update(strip, now);
                       //screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
-                      screen.showConnieLovesErik();
-                      
+                      if((now - lastShowTime) >=1000)
+                      {
+                        screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
+                        lastShowTime = now;
+                      }
                       break;
                   case 2:
                       chaser_update(strip, now);
