@@ -97,9 +97,7 @@ void Tardis::setup()
   do_output();
 
   motor_shield.begin();
-  for (int i=0; i<SOLENOIDS_NUM; i++) {
-    solenoids[i]->setup();
-  }
+  Solenoid::beginAll();
 }
 
 void Tardis::do_timerUpdate()
@@ -221,9 +219,6 @@ void Tardis::do_update()
           color = cap.interpolate(abs((int)(now % 5001) - 2500)).toRgb();
           pixel.setPixelColor(0, color.r, color.g, color.b);
        
-          Solenoid::updateAll();
-
-
         
           if(button.MenuPress)
           {
