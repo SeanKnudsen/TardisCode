@@ -20,6 +20,14 @@
 
 #define TIME_OFFSET -7
 
+typedef struct {
+  double latitude;
+  double longitude;
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;  
+} TIME_AND_PLACE;
+
 /* Example coordinates */
 // Sean's house:         37.80956388888889, 122.18388055555556
 // Jamieson Rach Winery: 38.22041388888889, 122.22920833333333
@@ -48,7 +56,7 @@ class Location {
 
     uint8_t Hour;
     uint8_t Minute; 
-    uint8_t Year;
+    uint16_t Year;
     uint8_t Month;
     uint8_t Day;
 

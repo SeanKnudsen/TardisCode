@@ -3,6 +3,9 @@
 byte calendarMonth[]     = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 byte calendarMonthLeap[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // I'm not a proud man...
 
+
+const TIME_AND_PLACE tp1 = {4.5, 3.7, 2016, 05, 21};
+
 //  Constructor
 Location::Location() :
   gps(Adafruit_GPS(&Serial1))
@@ -32,6 +35,7 @@ void Location::setup()
 
   utcOffset = TIME_OFFSET; 
   useInterrupt(true);
+  
 }
 
 
