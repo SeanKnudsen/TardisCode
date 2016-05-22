@@ -179,6 +179,27 @@ void Screen::showConnieLovesErik()
   updateNeeded = true;
 }
 
+
+void Screen::showSomaMessage()
+{
+    display.clearDisplay();
+
+  // miniature bitmap display
+  display.drawBitmap(0, 0,  somaMessage, 128, 64, 1);
+  //display.display();
+  updateNeeded = true;
+}
+
+void Screen::showYouMadeIt()
+{
+    display.clearDisplay();
+
+  // miniature bitmap display
+  display.drawBitmap(0, 0,  youMadeIt, 128, 64, 1);
+  //display.display();
+  updateNeeded = true;
+}
+
 void Screen::showNoGPS()
 {
   /*
