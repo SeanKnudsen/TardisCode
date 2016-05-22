@@ -8,6 +8,7 @@ shelfCase shelfState;
 SerialCom serialcom = SerialCom();
 
 bool batteryPower = false;
+bool targetFound = false;
 
 HSVInterpolator cap = HSVInterpolator(HSV(0.0, 0.0, 1.0), HSV(0.0, 0.0, 0.0), 0, 2500);
 
@@ -79,7 +80,7 @@ void Tardis::setup()
   serialcom.setup();
   location.setup();
 
-  location.setTarget(TARGET_LAT, TARGET_LON);
+  location.setTarget();
 
   // Setup Button as interrupt
   // pinMode(BUTTON_PIN, INPUT_PULLUP);           
@@ -154,6 +155,15 @@ void Tardis::do_update()
     lastShowTime = now;
     timeInitialized = true;
   }
+
+  // uberState {weddingMode, shelfMode, seekMode}
+  
+  // when in shelfMode, we have the following substates
+  // shelfCase { shelfClock, shelfMenu, shelfMissionReady }
+
+  // when in shelfMenu, we have the following substates
+  // subMenuCase { subMenu, subLED, subClk, subDoors }
+  // 
   switch(uberState)
   {
     case weddingMode:
@@ -218,19 +228,19 @@ void Tardis::do_update()
 
           color = cap.interpolate(abs((int)(now % 5001) - 2500)).toRgb();
           pixel.setPixelColor(0, color.r, color.g, color.b);
-       
-        
-          if(button.MenuPress)
-          {
-            //uncomment to allow button to do anything
-           // shelfState = shelfMenu;
-            
-          }
 
+          // TODO: We need to check flash and ensure not all missions have been completed. Once missions are all done, we don't want the tardis to keep moving to shelfMissionReady all the time.
           if(location.TPIndexReady())
           {
             // It's Time for an adventure! 
             shelfState = shelfMissionReady;
+          }
+
+          // Note, if for some reason the button is pressed at exactly midnight on an anniversary, we'll let the button overrule the mission ready.
+          if(button.LongPress)
+          {
+            //uncomment to allow button to do anything
+            shelfState = shelfMenu;
           }
 
           // TODO: add check to see if we're close enough to switch to mission ready
@@ -275,18 +285,63 @@ void Tardis::do_update()
           break;
           
         case shelfMissionReady:
-          screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
+          screen.showMissionReady();
+          if(button.ShortPress)
+          {
+            uberState = seekMode;     // Transition to new uber state
+            
+            // "Reset" substates of the former uber state
+            shelfState = shelfClock;  
+            subMenuState = subMenu;  
+          }
+          else if(button.LongPress)
+          {
+            shelfState = shelfMenu;
+            subMenuState = subMenu;
+          }
+          
+          location.setTarget();
           break;
       }
 
-      button.clearButtonPress();
-
       break;
     case seekMode:
+      screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
 
+      if(location.Distance <= FOUND_DISTANCE)
+      {
+        if(!targetFound)
+        {
+          // They made it!
+          targetFound = true;
+          // TODO: Do success lights
+          // TODO: Do success sounds
+          // TODO: Open Door
+          // TODO: Mark door as opened and save to flash
+          // TODO: Display Congrats message
+          // TODO: Wait for button press to go back to normal
+
+          // Looping for now. Perhaps once we're off the end we need a "found everything" state. 
+          tp_index = (tp_index + 1)% 6;
+
+          //if tp_index equals zero, we've done everything!
+         
+        }
+      }
+
+      if(button.LongPress)
+      {
+        uberState = shelfMode;
+        targetFound = false;
+        
+        // "Reset" substates of the former uber state
+        shelfState = shelfClock;  
+        subMenuState = subMenu;  
+      }
       break;
   }
-
+  
+  button.clearButtonPress();
 }
 
 void Tardis::do_output()

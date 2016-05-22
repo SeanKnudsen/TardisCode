@@ -41,8 +41,9 @@ class Location {
     
     void collectGPS();
     bool hasFix();
-    void setTarget(float lat, float lon);
+    void setTarget();
 
+    
     void useInterrupt(boolean v);
     bool TPIndexReady();
     

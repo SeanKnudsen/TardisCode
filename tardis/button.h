@@ -15,7 +15,6 @@ class Button {
       None,
       Short,
       Long,
-      Menu
     };
   
     Button();
@@ -24,12 +23,9 @@ class Button {
     void pinPoll();
 
     const int buttonPin = 47;
-
     
-
     bool ShortPress;
     bool LongPress;
-    bool MenuPress;
 
   private:
 };

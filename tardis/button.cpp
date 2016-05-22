@@ -48,11 +48,7 @@ void Button::pinPoll() {
       //Serial.print("Button Press: "); Serial.print(buttonHoldTime); Serial.print("\n");
       //Serial.println("--------------------------");
 
-      if(buttonHoldTime > MENU_PRESS_DURATION)
-      {
-        MenuPress = true;
-      }
-      else if(buttonHoldTime > LONG_PRESS_DURATION)
+      if(buttonHoldTime > LONG_PRESS_DURATION)
       {
         LongPress = true;
       }
@@ -71,7 +67,6 @@ void Button::clearButtonPress()
 {
   ShortPress = false;
   LongPress = false;
-  MenuPress = false;
 }
 
 

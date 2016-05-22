@@ -248,9 +248,11 @@ double Location::dist(double lat2, double lon2)
   return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * RADIUS_MI;
 }
 
-void Location::setTarget(float lat, float lon)
+void Location::setTarget()
 {
-  targetLat = lat;
-  targetLon = lon;
+  TIME_AND_PLACE t = tps[tp_index];
+  
+  targetLat = t.latitude;
+  targetLon = t.longitude;
 }
 
