@@ -311,25 +311,36 @@ void Tardis::do_update()
     case seekMode:
       screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
 
+      // TODO: lights go blue to red as distance gets closer!
       if(location.Distance <= FOUND_DISTANCE)
       {
         if(!targetFound)
         {
           // They made it!
           targetFound = true;
-          // TODO: Do success lights
+
+          // Update LED animation and Top Light
+          chaser_update(strip, now); // Question: Is this the appropriate animation?
+          color = cap.interpolate(abs((int)(now % 5001) - 2500)).toRgb();
+          pixel.setPixelColor(0, color.r, color.g, color.b);
+          
           // TODO: Do success sounds
-          // TODO: Open Door
+
+          // Open the door!
+          if(tp_index>= 0 && tp_index <=5)
+          {
+            solenoids[tp_index]->energize();
+          }
+          
           // TODO: Mark door as opened and save to flash
+          
+          // display the "You Made It!" screen
           screen.showYouMadeIt();
           lastShowTime = now;
-          // TODO: Wait for button press to go back to normal
-          
-          // Looping for now. Perhaps once we're off the end we need a "found everything" state. 
-          tp_index = (tp_index + 1)% 6;
 
-          //if tp_index equals zero, we've done everything!
-         
+          // if tp_index equals zero, we've done everything!
+          // Perhaps once we're off the end we need a "found everything" state. 
+          tp_index = (tp_index + 1)% 6;
         }
 
         // switch between soma message and you made it each 10 seconds forever...
@@ -345,7 +356,7 @@ void Tardis::do_update()
         } 
       }
 
-      if(button.LongPress)
+      if(button.LongPress || button.ShortPress)
       {
         uberState = shelfMode;
         targetFound = false;
