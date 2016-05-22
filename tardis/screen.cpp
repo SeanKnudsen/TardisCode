@@ -290,7 +290,18 @@ void Screen::showTime(uint8_t minute, uint8_t hour, uint8_t day, uint8_t month, 
   toggleColon = !toggleColon;
 }
 
-
+void Screen::showMissionReady()
+{
+  
+  //display.setFont(&FreeMono9pt7b);
+  initLCD(2);
+  display.setCursor(0,0);
+  //            "<press bt|
+  display.print(" Time to\r\n");
+  display.print("  travel!\r\n"); //Ready\r\n");
+  
+  updateNeeded = true;
+}
 
 void Screen::noGPSFix()
 {
