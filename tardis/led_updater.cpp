@@ -1,5 +1,5 @@
 #include "led_updater.h"
-#include "color.h"
+
 
 int LED_lut[] = {
     74, 75, 80, 81, 73, 76, 79, 82, 72, 77, 78, 83,
@@ -17,6 +17,13 @@ HSVInterpolator  fade = HSVInterpolator(HSV(0.4, 1.0, 1.0), HSV(0.4, 1.0, 0.0), 
 
 void solid_fader_update(Adafruit_DotStar& strip, unsigned long now) {
     RGB color = interpolate.interpolate(now % 50001).toRgb();
+    for( int i=0; i < 96; i++) {
+        // strip pixels are GRB
+        strip.setPixelColor(LED_lut[i], color.g, color.r, color.b);
+    }
+};
+
+void solid_color_update(Adafruit_DotStar& strip, RGB color) {
     for( int i=0; i < 96; i++) {
         // strip pixels are GRB
         strip.setPixelColor(LED_lut[i], color.g, color.r, color.b);

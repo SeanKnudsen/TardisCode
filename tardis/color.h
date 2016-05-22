@@ -1,3 +1,5 @@
+#ifndef _COLOR_H_
+#define _COLOR_H_
 #include <stdint.h>
 
 struct RGB {
@@ -40,3 +42,5 @@ class HSVInterpolator {
       unsigned long start;
       unsigned long end;
 };
+
+#endif

@@ -149,6 +149,7 @@ void Tardis::do_update()
   static bool timeInitialized = false;
   RGB color;
   
+  
   button.pinPoll();
   if(!timeInitialized)
   {
@@ -312,7 +313,37 @@ void Tardis::do_update()
       screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
 
       // TODO: lights go blue to red as distance gets closer!
-      if(location.Distance <= FOUND_DISTANCE)
+      if(!targetFound && location.Distance < 1.0)
+      {
+        // get color
+        if(location.Distance * 5280 > 2640)
+        {
+          // we're still kinda far, so have a deep blue, and increase red as we approach.
+          
+          // As distance decreases, color.r will increase
+          // e.g. dist is 1.0 miles, r will be 0
+          // e.g. dist is 2640.1, r will be 239 (I chose divide by 11 so the result would be less than 255
+          color.r = (5280 - (location.Distance * 5280))/11;
+          color.g = 0;    // green is fixed in this mode
+          color.b = 255;  //blue is fixed in this mode        
+        }
+        else
+        {
+          // we're getting closer, so max out red, and slowly decrease the amount of blue.
+          color.r = 255;  // red is fixed in this mode
+          color.g = 0;    // green is fixed in this mode
+
+          // As distance decreases, color b will decrease
+          // e.g. dist is 2640', b will be 240
+          // e.g. dist is 35', b will be 3
+          color.b = (location.Distance * 5280)/11;
+        }
+        
+        solid_color_update(strip, color);
+      }
+
+      // must convert distance to feet first!!!
+      if((location.Distance * 5280) <= FOUND_DISTANCE)
       {
         if(!targetFound)
         {
