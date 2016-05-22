@@ -321,15 +321,28 @@ void Tardis::do_update()
           // TODO: Do success sounds
           // TODO: Open Door
           // TODO: Mark door as opened and save to flash
-          // TODO: Display Congrats message
+          screen.showYouMadeIt();
+          lastShowTime = now;
           // TODO: Wait for button press to go back to normal
-
+          
           // Looping for now. Perhaps once we're off the end we need a "found everything" state. 
           tp_index = (tp_index + 1)% 6;
 
           //if tp_index equals zero, we've done everything!
          
         }
+
+        // switch between soma message and you made it each 10 seconds forever...
+        if(now - lastShowTime > 10000)
+        {
+          screen.showSomaMessage();    
+        }
+
+        if(now - lastShowTime > 20000)
+        {
+          screen.showYouMadeIt();
+          lastShowTime = now;
+        } 
       }
 
       if(button.LongPress)
