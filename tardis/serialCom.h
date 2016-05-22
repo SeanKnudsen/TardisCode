@@ -9,6 +9,7 @@
 #define PACKET_LENGTH 4
 #define COMMAND_COUNT 3
 
+// commands are ASCII
 #define OPEN_DOOR '1' // 1-6
 #define LED '2'       // 1-4
 
@@ -24,7 +25,6 @@ class SerialCom {
     void read();
     void checkForCommand();
     void clearArray();
-    void writeStr(int str);
     
     bool gotCommand;
     int cmdCommand;

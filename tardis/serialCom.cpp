@@ -36,13 +36,11 @@ void SerialCom::read()
 
 }
 
-//    solenoids[i]->update(now);
-
 // Command struct
-// "2 1\n" is "LED 1"
-// DOORS 1 4
+// "2 1\r" is "LED 1"
+// DOORS 0 3
+//       1 4
 //       2 5
-//       3 6
 void SerialCom::checkForCommand()
 {
   char temp;
@@ -56,7 +54,7 @@ void SerialCom::checkForCommand()
       if((inputArray[1] == ' ') && (inputArray[3] == '\r'))
       {
         gotCommand = true;
-        cmdCommand = inputArray[0] - '0';
+        cmdCommand = inputArray[0];
         cmdParam = inputArray[2] - '0';
 
         
@@ -65,10 +63,6 @@ void SerialCom::checkForCommand()
     clearArray();
   }
   
-}
-
-void SerialCom::writeStr(int str)
-{
 }
 
 void SerialCom::clearArray()

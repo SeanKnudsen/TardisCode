@@ -119,18 +119,16 @@ void Tardis::do_input()
 
   if(serialcom.gotCommand)
   {
-    serialcom.writeStr(serialcom.cmdCommand);
-    serialcom.writeStr(serialcom.cmdParam);
     switch(serialcom.cmdCommand)
     {
-      case 1:
+      case OPEN_DOOR:
         if(serialcom.cmdParam >= 0 && serialcom.cmdParam <=5)
         {
           solenoids[serialcom.cmdParam]->energize();
         }
         break;
 
-      case 2:
+      case LED:
         // Pattern displayed here?
         flash_start = millis();
         flash_pattern = serialcom.cmdParam;
