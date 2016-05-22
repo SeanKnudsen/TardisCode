@@ -28,6 +28,8 @@ typedef struct {
   uint8_t day;  
 } TIME_AND_PLACE;
 
+extern uint8_t tp_index;
+
 /* Example coordinates */
 // Sean's house:         37.80956388888889, 122.18388055555556
 // Jamieson Rach Winery: 38.22041388888889, 122.22920833333333
@@ -42,6 +44,8 @@ class Location {
     void setTarget(float lat, float lon);
 
     void useInterrupt(boolean v);
+    bool TPIndexReady();
+    
     float Latitude;
     int LatDeg;
     float LatMin;

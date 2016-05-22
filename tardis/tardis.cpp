@@ -232,6 +232,12 @@ void Tardis::do_update()
             
           }
 
+          if(location.TPIndexReady())
+          {
+            // It's Time for an adventure! 
+            shelfState = shelfMissionReady;
+          }
+
           // TODO: add check to see if we're close enough to switch to mission ready
           break;
 
@@ -272,8 +278,9 @@ void Tardis::do_update()
           }
             // TODO: implement timeout to go back to shelfClockMode
           break;
+          
         case shelfMissionReady:
-
+          screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
           break;
       }
 

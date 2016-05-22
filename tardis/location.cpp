@@ -1,8 +1,8 @@
 #include "location.h"
+#define TOTAL_LOCATIONS 6
 //                          Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
 byte calendarMonth[]     = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 byte calendarMonthLeap[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // I'm not a proud man...
-
 
 const TIME_AND_PLACE parkandride = {37.81220277777778, 121.9916, 2016, 05, 21};
 const TIME_AND_PLACE blackbear = {37.81001388888889, 121.99140277777778, 2016, 05, 21};
@@ -10,6 +10,9 @@ const TIME_AND_PLACE starbucks = {37.810325, 121.99010833333334, 2016, 05, 21};
 const TIME_AND_PLACE navlets = {37.80926944444444, 121.98978611111112, 2016, 05, 21};
 const TIME_AND_PLACE gasstation = {37.80937222222222, 121.99119166666667, 2016, 05, 21};
 const TIME_AND_PLACE house = {37.810091666666665, 121.98774444444444, 2016, 05, 21};
+
+TIME_AND_PLACE tps[TOTAL_LOCATIONS] = {parkandride, blackbear, starbucks, navlets, gasstation, house};
+uint8_t tp_index = 0;
 
 //  Constructor
 Location::Location() :
@@ -57,6 +60,20 @@ void Location::useInterrupt(boolean v) {
     usingInterrupt = false;
   }
 }
+
+bool Location::TPIndexReady()
+{
+  bool result = false;
+  TIME_AND_PLACE currentTp = tps[tp_index];
+
+  if(Year >= currentTp.year && Month >= currentTp.month && Day >= currentTp.day)
+  {
+    result = true;
+  }
+
+  return result;
+}
+
 
 void Location::collectGPS()
 {
