@@ -1,6 +1,7 @@
 #include "tardis.h"
 
 Location location = Location();
+Memory memory = Memory();
 Screen screen = Screen();
 Button button = Button();
 useCase uberState;
@@ -79,7 +80,12 @@ void Tardis::setup()
   Serial.begin(115200);
   serialcom.setup();
   location.setup();
-
+  
+  // load which doors have been opened from memory
+  memory.setup();
+  // set tp_index accordingly
+  location.tp_index = memory.indexOfCurrentDoor();
+  
   location.setTarget();
 
   // Setup Button as interrupt
@@ -147,6 +153,7 @@ void Tardis::do_update()
   static int subMenuState = 0;
   unsigned long now = millis();
   static bool timeInitialized = false;
+  static bool stripCleared = false;
   RGB color;
   
   
@@ -311,37 +318,55 @@ void Tardis::do_update()
       break;
     case seekMode:
       screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
-
-      // TODO: lights go blue to red as distance gets closer!
-      if(!targetFound && location.Distance < 1.0)
+      
+      // lights go blue to red as tardis gets closer.
+      // on time is 333 ms of 1 second total
+      if(now - lastShowTime < 333)
       {
-        // get color
-        if(location.Distance * 5280 > 2640)
+        if(!targetFound && location.Distance < 1.0)
         {
-          // we're still kinda far, so have a deep blue, and increase red as we approach.
+          // get color
+          if(location.Distance * 5280 > 2640)
+          {
+            // we're still kinda far, so have a deep blue, and increase red as we approach.
+            
+            // As distance decreases, color.r will increase
+            // e.g. dist is 1.0 miles, r will be 0
+            // e.g. dist is 2640.1, r will be 239 (I chose divide by 11 so the result would be less than 255
+            color.r = (5280 - (location.Distance * 5280))/11;
+            color.g = 0;    // green is fixed in this mode
+            color.b = 255;  //blue is fixed in this mode        
+          }
+          else
+          {
+            // we're getting closer, so max out red, and slowly decrease the amount of blue.
+            color.r = 255;  // red is fixed in this mode
+            color.g = 0;    // green is fixed in this mode
+  
+            // As distance decreases, color b will decrease
+            // e.g. dist is 2640', b will be 240
+            // e.g. dist is 35', b will be 3
+            color.b = (location.Distance * 5280)/11;
+          }
           
-          // As distance decreases, color.r will increase
-          // e.g. dist is 1.0 miles, r will be 0
-          // e.g. dist is 2640.1, r will be 239 (I chose divide by 11 so the result would be less than 255
-          color.r = (5280 - (location.Distance * 5280))/11;
-          color.g = 0;    // green is fixed in this mode
-          color.b = 255;  //blue is fixed in this mode        
+          solid_color_update(strip, color);
         }
-        else
+      }
+      else
+      {
+        if(!stripCleared)
         {
-          // we're getting closer, so max out red, and slowly decrease the amount of blue.
-          color.r = 255;  // red is fixed in this mode
-          color.g = 0;    // green is fixed in this mode
+          strip.clear(); // turn strip off
+          stripCleared = true;
+        }
 
-          // As distance decreases, color b will decrease
-          // e.g. dist is 2640', b will be 240
-          // e.g. dist is 35', b will be 3
-          color.b = (location.Distance * 5280)/11;
+        if(now - lastShowTime > 1000)
+        {
+          lastShowTime = now;
+          stripCleared = false;
         }
         
-        solid_color_update(strip, color);
       }
-
       // must convert distance to feet first!!!
       if((location.Distance * 5280) <= FOUND_DISTANCE)
       {
@@ -349,6 +374,10 @@ void Tardis::do_update()
         {
           // They made it!
           targetFound = true;
+
+          // Save results
+          memory.values.doorsOpened[location.tp_index] = true;
+          memory.saveConfig();
 
           // Update LED animation and Top Light
           chaser_update(strip, now); // Question: Is this the appropriate animation?
@@ -358,9 +387,9 @@ void Tardis::do_update()
           // TODO: Do success sounds
 
           // Open the door!
-          if(tp_index>= 0 && tp_index <=5)
+          if(location.tp_index>= 0 && location.tp_index <=5)
           {
-            solenoids[tp_index]->energize();
+            solenoids[location.tp_index]->energize();
           }
           
           // TODO: Mark door as opened and save to flash
@@ -371,7 +400,7 @@ void Tardis::do_update()
 
           // if tp_index equals zero, we've done everything!
           // Perhaps once we're off the end we need a "found everything" state. 
-          tp_index = (tp_index + 1)% 6;
+          location.tp_index = (location.tp_index + 1)% 6;
         }
 
         // switch between soma message and you made it each 10 seconds forever...

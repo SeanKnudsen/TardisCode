@@ -14,6 +14,7 @@
 #include "color.h"
 #include "serialCom.h"
 #include "led_updater.h"
+#include "memory.h"
 
 
 enum useCase {
