@@ -315,6 +315,7 @@ void Screen::showMissionReady()
 {
   
   //display.setFont(&FreeMono9pt7b);
+  display.setFont(); // no argument should set to default font
   initLCD(2);
   display.setCursor(0,0);
   //            "<press bt|
