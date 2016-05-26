@@ -210,7 +210,7 @@ void Tardis::do_update()
           } else {
               switch ((now / 30000) % 4) {
                   case 0:
-                      random_update(strip, now);
+                      batteryPower ? chaser_update(strip, now): random_update(strip, now);
                       if((now - lastShowTime) >=1000)
                       {
                         screen.showTime(location.Minute, location.Hour, location.Day, location.Month, location.Year);
@@ -218,7 +218,7 @@ void Tardis::do_update()
                       }
                       break;
                   case 1:
-                      solid_fader_update(strip, now);
+                      batteryPower ? chaser_update(strip, now): solid_fader_update(strip, now);
                       //screen.showStdLatLon(location.LatDeg, location.LatMin, location.LonDeg, location.LonMin, location.Altitude, location.Distance);
                       if((now - lastShowTime) >=1000)
                       {
@@ -227,11 +227,11 @@ void Tardis::do_update()
                       }
                       break;
                   case 2:
-                      chaser_update(strip, now);
+                      batteryPower ? chaser_update(strip, now): chaser_update(strip, now);
                       screen.showConnieLovesErik();
                       break;
                   case 3:
-                      pulse_update(strip, now);
+                      batteryPower ? chaser_update(strip, now): pulse_update(strip, now);
                       screen.showConnieLovesErik();
                       break;
               }
