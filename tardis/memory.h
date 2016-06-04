@@ -1,7 +1,7 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
-#define CONFIG_VERSION "soma"
+//#define CONFIG_VERSION "soma"
 #define CONFIG_START 0
 
 typedef struct {

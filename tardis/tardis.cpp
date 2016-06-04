@@ -52,22 +52,7 @@ Tardis::Tardis() :
   digitalWrite(33, HIGH);       // turn on p
 
   batteryPower = !digitalRead(33);
-  if(batteryPower)
-  {
-      //Serial.println("I am on battery power");
-  }
-  else
-  {
-      //Serial.println("I am on wall power");
-  }
-  
 }
-/*
-void pin_ISR()
-{
-  button.pinISR();
-}
-*/
 
 
 void Tardis::setup()
@@ -80,9 +65,11 @@ void Tardis::setup()
   Serial.begin(115200);
   serialcom.setup();
   location.setup();
-  
+
+    Serial.println("Main - call memory.setup()");
   // load which doors have been opened from memory
   memory.setup();
+  
   // set tp_index accordingly
   location.tp_index = memory.indexOfCurrentDoor();
   
@@ -377,6 +364,7 @@ void Tardis::do_update()
 
           // Save results
           memory.values.doorsOpened[location.tp_index] = true;
+          Serial.print("save idx: "); Serial.print(location.tp_index);
           memory.saveConfig();
 
           // Update LED animation and Top Light

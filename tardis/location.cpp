@@ -4,14 +4,19 @@
 byte calendarMonth[]     = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 byte calendarMonthLeap[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // I'm not a proud man...
 
-const TIME_AND_PLACE parkandride = {37.81220277777778, 121.9916, 2016, 05, 21};
-const TIME_AND_PLACE blackbear = {37.81001388888889, 121.99140277777778, 2016, 05, 21};
-const TIME_AND_PLACE starbucks = {37.810325, 121.99010833333334, 2016, 05, 21};
-const TIME_AND_PLACE navlets = {37.80926944444444, 121.98978611111112, 2016, 05, 21};
-const TIME_AND_PLACE gasstation = {37.80937222222222, 121.99119166666667, 2016, 05, 21};
-const TIME_AND_PLACE house = {37.810091666666665, 121.98774444444444, 2016, 05, 21};
+const TIME_AND_PLACE parkandride = {37.81220277777778, 121.9916, 16, 05, 21};
+const TIME_AND_PLACE blackbear = {37.81001388888889, 121.99140277777778, 16, 05, 21};
+const TIME_AND_PLACE starbucks = {37.810325, 121.99010833333334, 16, 05, 21};
+const TIME_AND_PLACE navlets = {37.80926944444444, 121.98978611111112, 16, 05, 21};
+const TIME_AND_PLACE gasstation = {37.80937222222222, 121.99119166666667, 16, 05, 21};
+const TIME_AND_PLACE house = {37.810091666666665, 121.98774444444444, 16, 05, 21};
 
-TIME_AND_PLACE tps[TOTAL_LOCATIONS] = {parkandride, blackbear, starbucks, navlets, gasstation, house};
+const TIME_AND_PLACE rachels0 = {37.810236, 121.987419, 16, 06, 03};
+const TIME_AND_PLACE rachels1 = {37.810089, 121.987394, 16, 06, 03};
+const TIME_AND_PLACE rachels2 = {37.809933, 121.987419, 16, 06, 03};
+
+//TIME_AND_PLACE tps[TOTAL_LOCATIONS] = {parkandride, blackbear, starbucks, navlets, gasstation, house};
+TIME_AND_PLACE tps[TOTAL_LOCATIONS] = {rachels0, rachels1, rachels2, rachels1, rachels2, rachels0};
 uint8_t tp_index = 0;
 
 //  Constructor
@@ -65,12 +70,13 @@ bool Location::TPIndexReady()
 {
   bool result = false;
   TIME_AND_PLACE currentTp = tps[tp_index];
-
+  Serial.println("check - ready for adventure?");
   if(Year >= currentTp.year && Month >= currentTp.month && Day >= currentTp.day)
   {
     result = true;
   }
-
+  // Serial.print("Time for adventure: "); Serial.print(result);
+  //Serial.print("adventure: "); Serial.print(currentTp);
   return result;
 }
 
